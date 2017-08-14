@@ -27,7 +27,7 @@ const mainVue = new Vue({
   el: 'main',
   router
 });
-console.log('prepared');
+
 // Import local files
 //
 // Local files can be imported directly using relative

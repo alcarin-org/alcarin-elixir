@@ -20,7 +20,10 @@ exports.config = {
       // }
     },
     stylesheets: {
-      joinTo: "css/app.css"
+      joinTo: {
+        "css/app.css": /^css/,
+        "css/vendor.css": /^node_modules/
+      }
     },
     templates: {
       joinTo: "js/app.js"
@@ -37,7 +40,7 @@ exports.config = {
   // Phoenix paths configuration
   paths: {
     // Dependencies and current project directories to watch
-    watched: ["static", "css", "js", "vendor"],
+    watched: ["static", "css", "js", "components"],
     // Where to compile files to
     public: "../priv/static"
   },
@@ -60,6 +63,12 @@ exports.config = {
     enabled: true,
     aliases: {
       vue: 'vue/dist/vue.common.js'
+    },
+    styles: {
+      purecss: [
+        'build/pure.css',
+        'build/grids-responsive.css',
+      ],
     }
   }
 };

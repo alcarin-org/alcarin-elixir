@@ -9,16 +9,7 @@
 
     <title>Hello AlcarinWebpage!</title>
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
-    <link rel="stylesheet"
-          href="https://unpkg.com/purecss@1.0.0/build/pure-min.css"
-          integrity="sha384-nn4HPE8lTHyVtfCBi5yW9d20FjT8BJwUXyWZT9InLYax14RDjBj46LmSztkmNP9w"
-          crossorigin="anonymous">
-    <!--[if lte IE 8]>
-      <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/grids-responsive-old-ie-min.css">
-    <![endif]-->
-    <!--[if gt IE 8]><!-->
-      <link rel="stylesheet" href="https://unpkg.com/purecss@1.0.0/build/grids-responsive-min.css">
-    <!--<![endif]-->
+    <link rel="stylesheet" href="<%= static_path(@conn, "/css/vendor.css") %>">
   </head>
 
   <body>
@@ -37,13 +28,10 @@
 
       <main role="main">
         <router-view>
-
-        <%= render @view_module, @view_template, assigns %>
         </router-view>
       </main>
-<%#           <Test></Test> %>
 
-    </div> <!-- /container -->
+    </div>
     <script src="<%= static_path(@conn, "/js/vendor.js") %>"></script>
     <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
 
