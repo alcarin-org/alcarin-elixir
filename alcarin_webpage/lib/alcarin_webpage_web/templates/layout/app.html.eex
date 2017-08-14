@@ -36,8 +36,12 @@
       <p class="alert alert-danger" role="alert"><%= get_flash(@conn, :error) %></p>
 
       <main role="main">
+        <router-view>
+
         <%= render @view_module, @view_template, assigns %>
+        </router-view>
       </main>
+<%#           <Test></Test> %>
 
     </div> <!-- /container -->
     <script src="<%= static_path(@conn, "/js/vendor.js") %>"></script>
