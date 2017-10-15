@@ -5,7 +5,9 @@ defmodule AlcarinApiWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/api", AlcarinApiWeb do
+  scope "/", AlcarinApiWeb do
     pipe_through :api
+
+    get "/test", TestController, :index
   end
 end

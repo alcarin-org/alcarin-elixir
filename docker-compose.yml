@@ -4,14 +4,15 @@ volumes:
   alcarin_api_data:
 
 services:
-  webpage:
-    build: ./alcarin_webpage
+  frontend:
+    image: node:8.7.0
     working_dir: /code
-    command: mix phx.server
+    command: npm start
     volumes:
-      - ./alcarin_webpage:/code
+      - ./alcarin_frontend:/code
     ports:
-      - "80:4000"
+      - "8080:3333"
+      - "9485:9485"
 
   api:
     build: ./alcarin_api
