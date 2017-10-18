@@ -23,7 +23,7 @@ exports.config = {
 
   plugins: {
     babel: {
-      presets: ['latest'],
+      presets: ['latest', 'react'],
       ignore: [/vendor/],
     },
 
@@ -32,4 +32,5 @@ exports.config = {
     }
   },
 
+  notifications: false
 }

@@ -1,41 +1,36 @@
-import xs from 'xstream';
-import {run} from '@cycle/run';
-import {makeDOMDriver, a, img, h, input, div, button} from '@cycle/dom';
-import {makeHTTPDriver} from '@cycle/http';
-import {prop} from 'ramda';
+import {init} from 'snabbdom';
+import toVNode from 'snabbdom/tovnode';
+import Component from './Component'
+import store from './store';
 
-function renderDOM(checked) {
-  return div([
-    img({props: {src: 'http://brunch.io/images/logo.png'}}),
-    h('label', [
-      input({props: {type: 'checkbox', checked: checked}}),
-      checked ? 'checked' : 'unchecked'
-    ]),
-    button('#clickme', 'click me')
-  ]);
-}
+const patch = init([ // Init patch function with chosen modules
+  require('snabbdom/modules/class').default, // makes it easy to toggle classes
+  require('snabbdom/modules/props').default, // for setting properties on DOM elements
+  require('snabbdom/modules/style').default, // handles styling on elements with support for animations
+  require('snabbdom/modules/eventlisteners').default, // attaches event listeners
+]);
 
-function main(sources) {
-  const inputChecked$ = sources.DOM.select('input').events('change').map(
-    (input) => input.target.checked
-  ).startWith(false);
+const applyComponents = (queryEl, Component) => {
+  store.subscribe(() => {
+    const element = document.querySelector(queryEl);
+    if (!element) {
+      return console.warn(`Can't find ${queryEl}.`);
+    }
+    element.innerHTML = '';
+    const child = document.createElement('div');
+    element.append(child);
 
-  const clicks$ = sources.DOM.select('#clickme').events('click');
-
-  const res$ = sources.HTTP.select('users').flatten().map(prop('body')).debug('me').subscribe({})
-  return {
-    DOM: inputChecked$.map(renderDOM),
-    HTTP: clicks$.map(() => ({
-        url: 'https://jsonplaceholder.typicode.com/users/' + String(6),
-        category: 'users',
-        method: 'GET'
-    }))
-  };
-}
-
-const drivers = {
-  DOM: makeDOMDriver('#app'),
-  HTTP: makeHTTPDriver(),
+    const component = Component(store, {
+      btnLabel: 'just test',
+      checked: true,
+    });
+    patch(child, component);
+  });
 };
 
-run(main, drivers);
+// execution later
+
+
+var app = document.getElementById('app');
+applyComponents('#app', Component);
+store.dispatch({type: 'increase'});
