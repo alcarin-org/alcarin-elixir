@@ -10,16 +10,16 @@
     "build": "brunch build --production"
   },
   "dependencies": {
-    "@cycle/dom": "^18.3.0",
-    "@cycle/http": "^14.5.0",
-    "@cycle/run": "^3.3.0",
     "ramda": "^0.25.0",
-    "xstream": "^11.0.0"
+    "redux": "^3.7.2",
+    "snabbdom": "^0.7.0",
+    "snabbdom-jsx": "^0.4.2"
   },
   "devDependencies": {
     "auto-reload-brunch": "^2",
     "babel-brunch": "~6.0",
     "babel-preset-latest": "^6",
+    "babel-preset-react": "^6.24.1",
     "brunch": "^2",
     "clean-css-brunch": "^2",
     "uglify-js-brunch": "^2"
