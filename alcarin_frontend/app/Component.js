@@ -1,13 +1,12 @@
-/** @jsx html */
-
-import {h} from 'snabbdom';
 import store from './store';
-import {html} from 'snabbdom-jsx';
 import {connect} from './framework';
 
-function CustomElement({counter}) {
+function CustomElement({counter, children}) {
   return (
-    <input type="number" value={counter} />
+    <div>
+      {children}
+      <input type="number" value={counter} />
+    </div>
   );
 }
 
@@ -16,10 +15,13 @@ export function Component({counter, btnLabel, increase}) {
     <div>
       <img src="http://brunch.io/images/logo.png" />
       <label>Click Count: {counter}</label>
-      <button id="clickme" on-click={increase}>
+      <button id="clickme" className="btn" onclick={increase}>
         {btnLabel}
       </button>
-      <CustomElement counter={counter}></CustomElement>
+      <CustomElement counter={counter}>
+        <input type="text" value={3} />
+        <label>wot 666</label>
+      </CustomElement>
     </div>
   )
 }
