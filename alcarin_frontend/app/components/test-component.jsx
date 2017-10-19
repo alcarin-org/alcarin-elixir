@@ -1,33 +1,24 @@
-import store from './store';
-import {connect} from './framework';
+import {connect} from '../framework';
+import {ContainerComponent} from './container-component';
 
-function CustomElement({counter, children}) {
+export function TestComponent({counter, btnLabel, increase}) {
   return (
-    <div>
-      {children}
-      <input type="number" value={counter} />
-    </div>
-  );
-}
-
-export function Component({counter, btnLabel, increase}) {
-  return (
-    <div>
+    <div className="recognize-me">
       <img src="http://brunch.io/images/logo.png" />
       <label>Click Count: {counter}</label>
       <button id="clickme" className="btn" onclick={increase}>
         {btnLabel}
       </button>
-      <CustomElement counter={counter}>
+      <ContainerComponent label="It's in placeholder">
         <input type="text" value={3} />
         <label>wot 666</label>
-      </CustomElement>
+      </ContainerComponent>
     </div>
   )
 }
 
 export default connect(
-  Component,
+  TestComponent,
   (state) => ({counter: state.counter}),
   (dispatch) => ({increase: () => dispatch({type: 'increase'})})
 );

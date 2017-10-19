@@ -12,8 +12,7 @@
   "dependencies": {
     "ramda": "^0.25.0",
     "redux": "^3.7.2",
-    "snabbdom": "^0.7.0",
-    "snabbdom-jsx": "^0.4.2"
+    "snabbdom": "^0.7.0"
   },
   "devDependencies": {
     "auto-reload-brunch": "^2",

@@ -25,7 +25,8 @@ exports.config = {
     babel: {
       presets: ['latest'],
       ignore: [/vendor/],
-      plugins: [["transform-jsx", { "module": "framework/jsx", "useVariables": true }]]
+      plugins: [["transform-jsx", { "module": "framework/jsx", "useVariables": true }]],
+      pattern: /\.(js|jsx)$/
     },
 
     autoReload: {
