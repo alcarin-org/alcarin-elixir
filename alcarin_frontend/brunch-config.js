@@ -23,7 +23,7 @@ exports.config = {
 
   plugins: {
     babel: {
-      presets: ['latest'],
+      presets: ['env'],
       ignore: [/vendor/],
       plugins: [["transform-jsx", { "module": "framework/jsx", "useVariables": true }]],
       pattern: /\.(js|jsx)$/

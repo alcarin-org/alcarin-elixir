@@ -18,6 +18,7 @@
     "auto-reload-brunch": "^2",
     "babel-brunch": "~6.0",
     "babel-plugin-transform-jsx": "^2.0.0",
+    "babel-preset-env": "^1.6.1",
     "babel-preset-latest": "^6",
     "brunch": "^2",
     "clean-css-brunch": "^2",
