@@ -9,9 +9,9 @@ export function TestComponent({counter, btnLabel, increase}) {
       <button id="clickme" className="btn" onclick={increase}>
         {btnLabel}
       </button>
-      <ContainerComponent label="It's in placeholder">
-        <input type="text" value={3} />
-        <label>wot 666</label>
+      <ContainerComponent label="It's in placeholder" counter={counter}>
+      </ContainerComponent>
+      <ContainerComponent label="It's a 2th placeholder">
       </ContainerComponent>
     </div>
   )
