@@ -1,3 +1,5 @@
+import {path} from 'ramda';
+
 var $store = null;
 var $lastState = null;
 var listeners = {};
@@ -9,12 +11,24 @@ export function initStore(store) {
 }
 
 export function listenOnStorePath(path, callback) {
+  console.log('start listening on: ', path)
   if (! (path in listeners)) {
     listeners[path] = [];
   }
 
   listeners[path].push(callback);
+
+  return function reduxListenerOff() {
+    console.log('trying to release state listener')
+    const ind = listeners[path].indexOf(callback);
+    if (ind) {
+      console.log('state listener sreleased')
+      listeners[path].splice(ind, 1);
+    }
+  };
 }
+
+export const getState = (_path) => path(_path.split('.'), $store.getState());
 
 function onStoreChange() {
   const $state = $store.getState();

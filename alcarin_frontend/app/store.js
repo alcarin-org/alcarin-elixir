@@ -3,7 +3,7 @@ import {lensPath, over, inc} from 'ramda'
 
 export default createStore(
   reducer,
-  {counter: 0},
+  {counter: 1},
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 );
 

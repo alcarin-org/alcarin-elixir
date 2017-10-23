@@ -1,5 +1,7 @@
-export function ContainerComponent({label, children, counter}) {
-  console.log('generating component: ', label)
+export function ContainerComponent(x) {
+  const {label, children, counter} = x;
+  console.log('re-create fieldset comp: ', label)
+  console.log('++++++++++', x)
   return (
     <fieldset>
       <legend >{label} {counter}</legend>
