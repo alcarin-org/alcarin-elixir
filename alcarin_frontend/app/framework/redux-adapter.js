@@ -1,46 +1,46 @@
 import {path} from 'ramda';
 
-var $store = null;
-var $lastState = null;
-var listeners = {};
+export default function ReduxAdapter($store) {
+  const listeners = {};
 
-export function initStore(store) {
-  $store = store;
-  $lastState = store.getState();
+  var $lastState = $store.getState();
   $store.subscribe(onStoreChange);
-}
 
-export function listenOnStorePath(path, callback) {
-  console.log('start listening on: ', path)
-  if (! (path in listeners)) {
-    listeners[path] = [];
-  }
+  return {
+    listenOnStorePath(path, callback) {
+      console.log('start listening on: ', path)
+      if (path in listeners) {
+        listeners[path]();
+      }
 
-  listeners[path].push(callback);
+      listeners[path] = callback;
 
-  return function reduxListenerOff() {
-    console.log('trying to release state listener')
-    const ind = listeners[path].indexOf(callback);
-    if (ind) {
-      console.log('state listener sreleased')
-      listeners[path].splice(ind, 1);
+      return function reduxListenerOff() {
+        console.log('trying to release state listener')
+        delete listeners[path];
+      };
+    },
+
+    getState(_path) {
+      return path(_path.split('.'), $lastState);
     }
+
   };
-}
 
-export const getState = (_path) => path(_path.split('.'), $store.getState());
-
-function onStoreChange() {
-  const $state = $store.getState();
-  if ($state === $lastState) {
-    return;
-  }
-
-  for (let path in listeners) {
-    let [hasChanged, value] = pathChanged(path, $state, $lastState);
-    if (hasChanged) {
-      listeners[path].forEach((callback) => callback(value));
+  function onStoreChange() {
+    const $state = $store.getState();
+    if ($state === $lastState) {
+      return;
     }
+
+    for (let path in listeners) {
+      let [hasChanged, value] = pathChanged(path, $state, $lastState);
+      if (hasChanged) {
+        listeners[path](value)
+      }
+    }
+
+    $lastState = $state;
   }
 }
 

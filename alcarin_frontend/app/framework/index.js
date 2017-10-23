@@ -1,20 +1,12 @@
-import {init, h} from 'snabbdom';
 import {clone} from 'ramda';
-import {initStore, listenOnStorePath, getState} from './redux-adapter';
-import {shallowEqual} from './utils';
+import ReduxAdapterFactory from './redux-adapter';
+import {shallowEqual, patch} from './utils';
 
-const patch = init([
-  require('snabbdom/modules/class').default,
-  require('snabbdom/modules/props').default,
-  require('snabbdom/modules/style').default,
-  require('snabbdom/modules/dataset').default,
-  require('snabbdom/modules/eventlisteners').default,
-  require('snabbdom/modules/attributes').default,
-]);
 const EmptyObject = {};
 
 var lastVDom = null;
 var rootComponentFactory = null;
+var storeAdapter = null;
 
 export function bootstrap(queryEl, jsxComponentFactory, store) {
   const element = document.querySelector(queryEl);
@@ -22,8 +14,8 @@ export function bootstrap(queryEl, jsxComponentFactory, store) {
     throw new Error(`Can't find "${queryEl}".`);
   }
 
+  storeAdapter = ReduxAdapterFactory(store);
   rootComponentFactory = jsxComponentFactory;
-  initStore(store);
 
   var vdom = rootComponentFactory();
 
@@ -34,8 +26,18 @@ export function bootstrap(queryEl, jsxComponentFactory, store) {
     const realVNode = vNode.factory();
     delete vNode.factory;
     vNode.children = [realVNode];
+
     vNode.lastPropsState = vNode.data.props;
     vNode.lastDataState = EmptyObject;
+    if (vNode.lastPropsState.$state) {
+      console.log(`$state found`)
+      vNode.stateListeners = vNode.lastPropsState.$state.map(
+        (path) => storeAdapter.listenOnStorePath(path, () => {
+          console.warn('path', path, 'changed');
+          setTimeout(update, 0);
+        })
+      );
+    }
     return realVNode;
   });
   patch(dummyEl, resolveCustomComponents(vdom));
@@ -62,10 +64,12 @@ function attachPrepatchHook(vNode) {
     prepatch(oldVNode, vNode) {
       // get last params from "oldVNode" and compare to current params (with state incuded).
       // if nothing changed, reuse oldVNode children
-      console.log('time to prepatch: ', clone(oldVNode), clone(vNode));
+      console.log('Time to prepatch: ', clone(oldVNode), clone(vNode));
+
       if (oldVNode.stateListeners) {
-        console.log('found state listeners')
-        oldVNode.stateListeners.forEach((off) => off());
+        console.log('Found state listeners, re-attaching')
+        // oldVNode.stateListeners.forEach((off) => off());
+        vNode.stateListeners = oldVNode.stateLiseners;
         delete oldVNode.stateListeners;
       }
 
@@ -73,7 +77,7 @@ function attachPrepatchHook(vNode) {
       if (vNode.data.props.$state) {
         for (let i = 0; i < vNode.data.props.$state.length; i++) {
           let path = vNode.data.props.$state[i];
-          state[path] = getState(path);
+          state[path] = storeAdapter.getState(path);
         }
         delete vNode.data.props.$state;
       }
@@ -105,14 +109,9 @@ function resolveCustomComponents(vNode, resolveFn) {
       continue;
     }
     if (realVNode.factory) {
+      const cmpName = realVNode.factory.name;
       let origVNode = realVNode;
       realVNode = resolveFn(realVNode);
-      if (origVNode.data.props.$state) {
-        console.log('$state found')
-        origVNode.stateListeners = origVNode.data.props.$state.map(
-          (path) => listenOnStorePath(path, () => setTimeout(update, 0))
-        );
-      }
     }
     if (realVNode.children) {
       [].push.apply(stack, realVNode.children);

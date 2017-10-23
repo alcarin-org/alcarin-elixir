@@ -34,11 +34,14 @@ export default function jsx(jsxObject) {
  * @return {Function (state) -> vdom} Factory function that can be used to create Custom Element vdom later
  */
 function customComponentFactory(customComponentFn, props, componentContent) {
-  return (state) => customComponentFn(Object.assign(
+  const factory = (state) => customComponentFn(Object.assign(
     {$children: wrapContent(componentContent)},
     props,
     state
   ));
+  // debug only
+  Object.defineProperty(factory, 'name', {value: customComponentFn.name, writable: false});
+  return factory;
 }
 
 function resolveSnabbdomModules(vNodeAttributes) {
