@@ -1,8 +1,10 @@
 import {clone} from 'ramda';
 import ReduxAdapterFactory from './redux-adapter';
 import {shallowEqual, patch, iterateOverCustomComponents} from './utils';
-
-const EmptyObject = {};
+import {
+  CustomComponentKey,
+  EmptyArray,
+} from './const';
 
 export function bootstrap(queryEl, jsxComponentFactory, store) {
   var lastVDom = null;
@@ -11,27 +13,25 @@ export function bootstrap(queryEl, jsxComponentFactory, store) {
     throw new Error(`Can't find "${queryEl}".`);
   }
 
-  var storeAdapter = ReduxAdapterFactory(store);
-  var vdom = jsxComponentFactory();
+  const storeAdapter = ReduxAdapterFactory(store);
+  const vdom = jsxComponentFactory();
 
   const dummyEl = document.createElement('div');
   element.append(dummyEl);
   const resolvedVDom = iterateOverCustomComponents(vdom, (vCmpWrapper) => {
     console.log('****creating', vCmpWrapper);
 
-    if (vCmpWrapper.data.props.$state) {
-      console.log(`$state found`)
-      vCmpWrapper.stateListeners = vCmpWrapper.data.props.$state.map(
+    const customCmp = vCmpWrapper[CustomComponentKey];
+    if (customCmp.props.$state) {
+      customCmp.stateListeners = customCmp.props.$state.map(
         (path) => storeAdapter.listenOnStorePath(path, () => {
-          console.warn('path', path, 'changed');
           setTimeout(update, 0);
         })
       );
     }
-    vCmpWrapper.stateValue = resolveComponentState(vCmpWrapper.data.props);
-    const componentVNode = vCmpWrapper.factory(vCmpWrapper.stateValue);
+    customCmp.state = resolveComponentState(customCmp.props.$state);
+    const componentVNode = customCmp.factory(customCmp.props, customCmp.state);
 
-    delete vCmpWrapper.factory;
     vCmpWrapper.children = [componentVNode];
 
     return componentVNode;
@@ -57,37 +57,39 @@ export function bootstrap(queryEl, jsxComponentFactory, store) {
    */
   function attachPrepatchHook(vNode) {
     vNode.data.hook = Object.assign(vNode.data.hook || {}, {
-      prepatch(vCmpPrevWrapper, vCmpWrapper) {
-        console.log('Time to prepatch: ', clone(vCmpPrevWrapper), clone(vCmpWrapper));
+      prepatch(vOrigCmpWrapper, vCmpWrapper) {
+        console.log('Time to prepatch: ', clone(vOrigCmpWrapper), clone(vCmpWrapper));
 
-        if (vCmpPrevWrapper.stateListeners) {
-          vCmpWrapper.stateListeners = vCmpPrevWrapper.stateLiseners;
-          delete vCmpPrevWrapper.stateListeners;
+        const origCustomCmp = vOrigCmpWrapper[CustomComponentKey];
+        const customCmp = vCmpWrapper[CustomComponentKey];
+
+        customCmp.stateListeners = (origCustomCmp.stateLiseners || EmptyArray);
+
+        customCmp.state = resolveComponentState(customCmp.props.$state);
+
+        const cmpStateUnchanged = shallowEqual(customCmp.props, origCustomCmp.props) &&
+          shallowEqual(customCmp.state, origCustomCmp.state);
+
+        if (cmpStateUnchanged) {
+          return vCmpWrapper.children = vOrigCmpWrapper.children;
         }
 
-        const state = resolveComponentState(vCmpWrapper.data.props);
-
-        const stateNotChanged = shallowEqual(vCmpPrevWrapper.data.props, vCmpWrapper.data.props) &&
-          shallowEqual(vCmpPrevWrapper.$lastState, state);
-        vCmpWrapper.children = stateNotChanged ? vCmpPrevWrapper.children : [
-          iterateOverCustomComponents(vCmpWrapper.factory(state), attachPrepatchHook)
-        ];
-
-        vCmpWrapper.$lastState = state;
+        const customCmpVNode = customCmp.factory(customCmp.props, customCmp.state);
+        const resolveCustomCmpVNode = iterateOverCustomComponents(customCmpVNode, attachPrepatchHook)
+        vCmpWrapper.children = [resolveCustomCmpVNode];
       }
     });
 
     return vNode;
   }
 
-  function resolveComponentState(props) {
+  function resolveComponentState($state) {
     const state = {};
-    if (props.$state) {
-      for (let i = 0; i < props.$state.length; i++) {
-        let path = props.$state[i];
+    if ($state) {
+      for (let i = 0; i < $state.length; i++) {
+        let path = $state[i];
         state[path] = storeAdapter.getState(path);
       }
-      delete props.$state;
     }
     return state;
   }

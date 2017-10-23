@@ -1,27 +1,37 @@
 import {h} from 'snabbdom';
 import {is, head, omit, pick, clone} from 'ramda';
 import {storeProvider} from './index';
+import {
+  CustomComponentContainerClass,
+  CustomComponentContentClass,
+  CustomComponentKey,
+  EmptyObject
+} from './const';
 
 const SnabbdomModulesAttrs = ['$hook', '$on', '$class', '$dataset', '$style', '$attrs'];
 const propsFilter = omit(SnabbdomModulesAttrs);
 const snabbdomModulesFilter = pick(SnabbdomModulesAttrs);
 
-const ComponentContainerClass = '__c';
-const ComponentContentClass  = '__c-c';
-
 export default function jsx(jsxObject) {
-  const snabbdomModules = Object.assign(resolveSnabbdomModules(jsxObject.attributes), {
-    props: propsFilter(jsxObject.attributes),
-  });
+  const snabbdomModules = resolveSnabbdomModules(jsxObject.attributes);
+  const props = propsFilter(jsxObject.attributes);
 
   if (is(Function, jsxObject.elementName)) {
-    const customComponentWrapper = h('div.' + ComponentContainerClass, snabbdomModules);
-    return Object.assign(customComponentWrapper, {
-      factory: customComponentFactory(jsxObject.elementName, snabbdomModules.props, jsxObject.children)
-    })
+    const customComponent = {
+      props,
+      factory: customComponentFactory(jsxObject.elementName, jsxObject.children)
+    };
+    // DEV MODE ONLY, FOR DEBUG PURPOSES
+    snabbdomModules.props = Object.assign(snabbdomModules.props || {}, {
+      'customComponent': customComponent,
+    });
+    const customComponentWrapper = h('div.' + CustomComponentContainerClass, snabbdomModules);
+    customComponentWrapper[CustomComponentKey] = customComponent;
+
+    return customComponentWrapper;
   }
 
-  return h(jsxObject.elementName, snabbdomModules, jsxObject.children);
+  return h(jsxObject.elementName, Object.assign(snabbdomModules, {props}), jsxObject.children);
 }
 
 /**
@@ -34,7 +44,7 @@ export default function jsx(jsxObject) {
  * @return {Function (state) -> vdom} Factory function that can be used to create Custom Element vdom later
  */
 function customComponentFactory(customComponentFn, props, componentContent) {
-  const factory = (state) => customComponentFn(Object.assign(
+  const factory = (props = EmptyObject, state = EmptyObject) => customComponentFn(Object.assign(
     {$children: wrapContent(componentContent)},
     props,
     state
@@ -55,5 +65,5 @@ function resolveSnabbdomModules(vNodeAttributes) {
 
 function wrapContent(children) {
   // chilren are wrapped by single div if they are more than one
-  return children && (children.length > 1 ? h('div.' + ComponentContentClass, {}, children) : head(children));
+  return children && (children.length > 1 ? h('div.' + CustomComponentContentClass, {}, children) : head(children));
 }

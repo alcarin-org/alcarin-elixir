@@ -6,6 +6,9 @@ import style from 'snabbdom/modules/style';
 import dataset from 'snabbdom/modules/dataset';
 import eventlisteners from 'snabbdom/modules/eventlisteners';
 import attributes from 'snabbdom/modules/attributes';
+import {
+  CustomComponentKey,
+} from './const';
 
 export const patch = init([
   classModule,
@@ -55,7 +58,7 @@ export function iterateOverCustomComponents(vNode, componentResolveFn) {
     if (realVNode === undefined) {
       continue;
     }
-    if (realVNode.factory) {
+    if (realVNode[CustomComponentKey]) {
       realVNode = componentResolveFn(realVNode);
     }
     if (realVNode.children) {
