@@ -9,12 +9,8 @@ export default function ReduxAdapter($store) {
   return {
     listenOnStorePath(path, callback) {
       console.log('start listening on: ', path)
-      if (path in listeners) {
-        listeners[path]();
-      }
 
       listeners[path] = callback;
-
       return function reduxListenerOff() {
         console.log('trying to release state listener')
         delete listeners[path];
@@ -32,7 +28,6 @@ export default function ReduxAdapter($store) {
     if ($state === $lastState) {
       return;
     }
-
     for (let path in listeners) {
       let [hasChanged, value] = pathChanged(path, $state, $lastState);
       if (hasChanged) {

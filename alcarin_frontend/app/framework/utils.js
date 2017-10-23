@@ -42,3 +42,26 @@ export function shallowEqual(objA, objB) {
 
   return true;
 }
+
+export function iterateOverCustomComponents(vNode, componentResolveFn) {
+  if (!vNode) {
+    return;
+  }
+
+  const stack = [vNode];
+
+  while(stack.length > 0) {
+    let realVNode = stack.pop();
+    if (realVNode === undefined) {
+      continue;
+    }
+    if (realVNode.factory) {
+      realVNode = componentResolveFn(realVNode);
+    }
+    if (realVNode.children) {
+      [].push.apply(stack, realVNode.children);
+    }
+  }
+
+  return vNode;
+}

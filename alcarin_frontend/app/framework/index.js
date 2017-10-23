@@ -1,122 +1,94 @@
 import {clone} from 'ramda';
 import ReduxAdapterFactory from './redux-adapter';
-import {shallowEqual, patch} from './utils';
+import {shallowEqual, patch, iterateOverCustomComponents} from './utils';
 
 const EmptyObject = {};
 
-var lastVDom = null;
-var rootComponentFactory = null;
-var storeAdapter = null;
-
 export function bootstrap(queryEl, jsxComponentFactory, store) {
+  var lastVDom = null;
   const element = document.querySelector(queryEl);
   if (!element) {
     throw new Error(`Can't find "${queryEl}".`);
   }
 
-  storeAdapter = ReduxAdapterFactory(store);
-  rootComponentFactory = jsxComponentFactory;
-
-  var vdom = rootComponentFactory();
+  var storeAdapter = ReduxAdapterFactory(store);
+  var vdom = jsxComponentFactory();
 
   const dummyEl = document.createElement('div');
   element.append(dummyEl);
-  const resolvedVDom = resolveCustomComponents(vdom, (vNode) => {
-    console.log('****creating', vNode)
-    const realVNode = vNode.factory();
-    delete vNode.factory;
-    vNode.children = [realVNode];
+  const resolvedVDom = iterateOverCustomComponents(vdom, (vCmpWrapper) => {
+    console.log('****creating', vCmpWrapper);
 
-    vNode.lastPropsState = vNode.data.props;
-    vNode.lastDataState = EmptyObject;
-    if (vNode.lastPropsState.$state) {
+    if (vCmpWrapper.data.props.$state) {
       console.log(`$state found`)
-      vNode.stateListeners = vNode.lastPropsState.$state.map(
+      vCmpWrapper.stateListeners = vCmpWrapper.data.props.$state.map(
         (path) => storeAdapter.listenOnStorePath(path, () => {
           console.warn('path', path, 'changed');
           setTimeout(update, 0);
         })
       );
     }
-    return realVNode;
+    vCmpWrapper.stateValue = resolveComponentState(vCmpWrapper.data.props);
+    const componentVNode = vCmpWrapper.factory(vCmpWrapper.stateValue);
+
+    delete vCmpWrapper.factory;
+    vCmpWrapper.children = [componentVNode];
+
+    return componentVNode;
   });
-  patch(dummyEl, resolveCustomComponents(vdom));
+  patch(dummyEl, vdom);
   return lastVDom = vdom;
-}
 
-function update() {
-  if (!lastVDom) {
-    throw new Error('Update called before bootstrap');
+  function update() {
+    console.log('------------ updating all...');
+    const vdom = iterateOverCustomComponents(jsxComponentFactory(), attachPrepatchHook);
+    return lastVDom = patch(lastVDom, vdom);
   }
-  console.log('------------ updating all...');
 
-  // we defer resolving of Custom Components to prepatching moment.
-  // when it's a time to replace Custom Componet vnode, we checking it
-  // props and state. when they are same - we just returning last vdom.
-  // in other case - we generating vdom for given Custom Component
-  // (recursively, as Custom Component can have custom component children too)
-  const vdom = resolveCustomComponents(rootComponentFactory(), attachPrepatchHook);
-  return lastVDom = patch(lastVDom, vdom);
-}
+  /**
+   * we deferring resolve of Custom Components to prepatching moment.
+   * when it's a time to replace Custom Componet vnode, we checking it
+   * props and state. when they are same - we just returning last vdom.
+   * in other case - we generating vdom for given Custom Component
+   * (recursively, as Custom Component can have custom component children too)
+   *
+   * @param      {vNode}  vNode   The virtual node that tree will be considered
+   * @return     {vNode}  The
+   */
+  function attachPrepatchHook(vNode) {
+    vNode.data.hook = Object.assign(vNode.data.hook || {}, {
+      prepatch(vCmpPrevWrapper, vCmpWrapper) {
+        console.log('Time to prepatch: ', clone(vCmpPrevWrapper), clone(vCmpWrapper));
 
-function attachPrepatchHook(vNode) {
-  vNode.data.hook = Object.assign(vNode.data.hook || {}, {
-    prepatch(oldVNode, vNode) {
-      // get last params from "oldVNode" and compare to current params (with state incuded).
-      // if nothing changed, reuse oldVNode children
-      console.log('Time to prepatch: ', clone(oldVNode), clone(vNode));
-
-      if (oldVNode.stateListeners) {
-        console.log('Found state listeners, re-attaching')
-        // oldVNode.stateListeners.forEach((off) => off());
-        vNode.stateListeners = oldVNode.stateLiseners;
-        delete oldVNode.stateListeners;
-      }
-
-      const state = {};
-      if (vNode.data.props.$state) {
-        for (let i = 0; i < vNode.data.props.$state.length; i++) {
-          let path = vNode.data.props.$state[i];
-          state[path] = storeAdapter.getState(path);
+        if (vCmpPrevWrapper.stateListeners) {
+          vCmpWrapper.stateListeners = vCmpPrevWrapper.stateLiseners;
+          delete vCmpPrevWrapper.stateListeners;
         }
-        delete vNode.data.props.$state;
+
+        const state = resolveComponentState(vCmpWrapper.data.props);
+
+        const stateNotChanged = shallowEqual(vCmpPrevWrapper.data.props, vCmpWrapper.data.props) &&
+          shallowEqual(vCmpPrevWrapper.$lastState, state);
+        vCmpWrapper.children = stateNotChanged ? vCmpPrevWrapper.children : [
+          iterateOverCustomComponents(vCmpWrapper.factory(state), attachPrepatchHook)
+        ];
+
+        vCmpWrapper.$lastState = state;
       }
+    });
 
-      const stateNotChanged = shallowEqual(oldVNode.lastPropsState, vNode.data.props) &&
-        shallowEqual(oldVNode.lastDataState, state);
-      vNode.children = stateNotChanged ? oldVNode.children : [
-        resolveCustomComponents(vNode.factory(state), attachPrepatchHook)
-      ];
-
-      vNode.lastPropsState = vNode.data.props;
-      vNode.lastDataState = state;
-    }
-  });
-
-  return vNode;
-}
-
-function resolveCustomComponents(vNode, resolveFn) {
-  if (!vNode) {
-    return;
+    return vNode;
   }
 
-  const stack = [vNode];
-
-  while(stack.length > 0) {
-    let realVNode = stack.pop();
-    if (realVNode === undefined) {
-      continue;
+  function resolveComponentState(props) {
+    const state = {};
+    if (props.$state) {
+      for (let i = 0; i < props.$state.length; i++) {
+        let path = props.$state[i];
+        state[path] = storeAdapter.getState(path);
+      }
+      delete props.$state;
     }
-    if (realVNode.factory) {
-      const cmpName = realVNode.factory.name;
-      let origVNode = realVNode;
-      realVNode = resolveFn(realVNode);
-    }
-    if (realVNode.children) {
-      [].push.apply(stack, realVNode.children);
-    }
+    return state;
   }
-
-  return vNode;
 }
