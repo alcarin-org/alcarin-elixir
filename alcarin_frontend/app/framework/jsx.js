@@ -45,7 +45,7 @@ export default function jsx(jsxObject) {
  */
 function customComponentFactory(customComponentFn, props, componentContent) {
   const factory = (props = EmptyObject, state = EmptyObject) => customComponentFn(Object.assign(
-    {$children: wrapContent(componentContent)},
+    {$children: wrapCustomComponentContent(componentContent)},
     props,
     state
   ));
@@ -63,7 +63,7 @@ function resolveSnabbdomModules(vNodeAttributes) {
   return modules;
 }
 
-function wrapContent(children) {
+function wrapCustomComponentContent(children) {
   // chilren are wrapped by single div if they are more than one
   return children && (children.length > 1 ? h('div.' + CustomComponentContentClass, {}, children) : head(children));
 }

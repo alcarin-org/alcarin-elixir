@@ -1,5 +1,5 @@
 import {clone} from 'ramda';
-import ReduxAdapterFactory from './redux-adapter';
+import BaobabAdapterFactory from './store-adapter/baobab-adapter';
 import {shallowEqual, patch, iterateOverCustomComponents} from './utils';
 import {
   CustomComponentKey,
@@ -13,7 +13,7 @@ export function bootstrap(queryEl, jsxComponentFactory, store) {
     throw new Error(`Can't find "${queryEl}".`);
   }
 
-  const storeAdapter = ReduxAdapterFactory(store);
+  const storeAdapter = BaobabAdapterFactory(store);
   const vdom = jsxComponentFactory();
 
   const dummyEl = document.createElement('div');

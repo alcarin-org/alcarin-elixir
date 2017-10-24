@@ -20,7 +20,6 @@ export default function ReduxAdapter($store) {
     getState(_path) {
       return path(_path.split('.'), $lastState);
     }
-
   };
 
   function onStoreChange() {

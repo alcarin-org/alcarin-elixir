@@ -10,8 +10,8 @@
     "build": "brunch build --production"
   },
   "dependencies": {
+    "baobab": "^2.5.0",
     "ramda": "^0.25.0",
-    "redux": "^3.7.2",
     "snabbdom": "^0.7.0"
   },
   "devDependencies": {

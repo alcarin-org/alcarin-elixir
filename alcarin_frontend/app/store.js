@@ -1,22 +1,22 @@
-import { createStore } from 'redux'
-import {lensPath, over, inc} from 'ramda'
+import Baobab from 'baobab';
+import {inc, dec} from 'ramda'
 
-export default createStore(
-  reducer,
-  {counter: 1},
-  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
-);
+const $tree = new Baobab({
+  counter: 0,
+});
 
-const countLens = lensPath(['counter']);
-
-function reducer(state, action) {
+const counter$ = $tree.select('counter');
+$tree.dispatch = function (action) {
   switch (action.type) {
     case 'increase':
-      return over(countLens, inc, state);
-    case '@@INIT':
-      return state;
+      return counter$.apply(inc);
+    case 'decrease':
+      return counter$.apply(dec);
     default:
-      console.warn(`Unknown redux action: ${action.type}`);
+      console.warn(`Unknown action: ${action.type}`);
       return state;
   }
 }
+
+export default $tree;
+
