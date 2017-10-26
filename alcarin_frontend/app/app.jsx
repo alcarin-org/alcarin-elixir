@@ -1,12 +1,12 @@
-import {TestComponent} from './components/test-component'
+import {MainComponent} from './components/main-component'
 import store from './store';
 import {bootstrap} from './framework';
 
 
 bootstrap(
   '#app',
-  () => <TestComponent btnLabel='just test' checked={true} $state={['counter']}/>,
+  () => <MainComponent btnLabel='just test' checked={true} $state={['counter']}/>,
   store
 );
 
-setInterval(() => store.dispatch({type: 'increase'}), 3000);
+// setInterval(() => store.dispatch({type: 'increase'}), 3000);

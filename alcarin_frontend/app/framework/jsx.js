@@ -1,9 +1,7 @@
 import {h} from 'snabbdom';
-import {is, head, omit, pick, clone} from 'ramda';
-import {storeProvider} from './index';
+import {is, head, omit, pick, flatten} from 'ramda';
 import {
   CustomComponentContainerClass,
-  CustomComponentContentClass,
   CustomComponentKey,
   EmptyObject
 } from './const';
@@ -13,13 +11,14 @@ const propsFilter = omit(SnabbdomModulesAttrs);
 const snabbdomModulesFilter = pick(SnabbdomModulesAttrs);
 
 export default function jsx(jsxObject) {
+  const children = jsxObject.children ? flatten(jsxObject.children) : [];
   const snabbdomModules = resolveSnabbdomModules(jsxObject.attributes);
   const props = propsFilter(jsxObject.attributes);
 
   if (is(Function, jsxObject.elementName)) {
     const customComponent = {
       props,
-      factory: customComponentFactory(jsxObject.elementName, jsxObject.children)
+      factory: customComponentFactory(jsxObject.elementName, children)
     };
     // DEV MODE ONLY, FOR DEBUG PURPOSES
     snabbdomModules.props = Object.assign(snabbdomModules.props || {}, {
@@ -30,8 +29,7 @@ export default function jsx(jsxObject) {
 
     return customComponentWrapper;
   }
-
-  return h(jsxObject.elementName, Object.assign(snabbdomModules, {props}), jsxObject.children);
+  return h(jsxObject.elementName, Object.assign(snabbdomModules, {props}), children);
 }
 
 /**
@@ -43,9 +41,9 @@ export default function jsx(jsxObject) {
  *                                       note that it aren't resolved component children.
  * @return {Function (state) -> vdom} Factory function that can be used to create Custom Element vdom later
  */
-function customComponentFactory(customComponentFn, props, componentContent) {
+function customComponentFactory(customComponentFn, componentContent) {
   const factory = (props = EmptyObject, state = EmptyObject) => customComponentFn(Object.assign(
-    {$children: wrapCustomComponentContent(componentContent)},
+    {$children: componentContent},
     props,
     state
   ));
@@ -61,9 +59,4 @@ function resolveSnabbdomModules(vNodeAttributes) {
     modules[key.slice(1)] = jsxAttrs[key];
   }
   return modules;
-}
-
-function wrapCustomComponentContent(children) {
-  // chilren are wrapped by single div if they are more than one
-  return children && (children.length > 1 ? h('div.' + CustomComponentContentClass, {}, children) : head(children));
 }

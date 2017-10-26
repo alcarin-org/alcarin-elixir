@@ -3,7 +3,6 @@ import BaobabAdapterFactory from './store-adapter/baobab-adapter';
 import {shallowEqual, patch, iterateOverCustomComponents} from './utils';
 import {
   CustomComponentKey,
-  EmptyArray,
 } from './const';
 
 export function bootstrap(queryEl, jsxComponentFactory, store) {
@@ -13,21 +12,31 @@ export function bootstrap(queryEl, jsxComponentFactory, store) {
     throw new Error(`Can't find "${queryEl}".`);
   }
 
-  const storeAdapter = BaobabAdapterFactory(store);
+  const storeAdapter = BaobabAdapterFactory(store, updateUI);
   const vdom = jsxComponentFactory();
 
   const dummyEl = document.createElement('div');
   element.append(dummyEl);
-  const resolvedVDom = iterateOverCustomComponents(vdom, (vCmpWrapper) => {
-    console.log('****creating', vCmpWrapper);
+
+  const resolvedVDom = iterateOverCustomComponents(vdom, attachVNodeHooks);
+  patch(dummyEl, resolvedVDom);
+  return lastVDom = resolvedVDom;
+
+  function updateUI() {
+    console.log('-- update triggered')
+    const vdom = iterateOverCustomComponents(jsxComponentFactory(), attachVNodeHooks);
+    return lastVDom = patch(lastVDom, vdom);
+  }
+
+  function resolveNewCustomComponent(vCmpWrapper) {
+    // vCmpWrapper.data.hook = Object.assign(vCmpWrapper.data.hook || {}, {
+    //   init() { console.warn('init')},
+    //   create() { console.warn('created')},
+    // });
 
     const customCmp = vCmpWrapper[CustomComponentKey];
     if (customCmp.props.$state) {
-      customCmp.stateListeners = customCmp.props.$state.map(
-        (path) => storeAdapter.listenOnStorePath(path, () => {
-          setTimeout(update, 0);
-        })
-      );
+      customCmp.stateListeners = customCmp.props.$state.map(storeAdapter.updateOnStorePath);
     }
     customCmp.state = resolveComponentState(customCmp.props.$state);
     const componentVNode = customCmp.factory(customCmp.props, customCmp.state);
@@ -35,14 +44,6 @@ export function bootstrap(queryEl, jsxComponentFactory, store) {
     vCmpWrapper.children = [componentVNode];
 
     return componentVNode;
-  });
-  patch(dummyEl, vdom);
-  return lastVDom = vdom;
-
-  function update() {
-    console.log('------------ updating all...');
-    const vdom = iterateOverCustomComponents(jsxComponentFactory(), attachPrepatchHook);
-    return lastVDom = patch(lastVDom, vdom);
   }
 
   /**
@@ -55,16 +56,21 @@ export function bootstrap(queryEl, jsxComponentFactory, store) {
    * @param      {vNode}  vNode   The virtual node that tree will be considered
    * @return     {vNode}  The
    */
-  function attachPrepatchHook(vNode) {
+  function attachVNodeHooks(vNode) {
     vNode.data.hook = Object.assign(vNode.data.hook || {}, {
+      init(initialVnode) {
+        const resolvedCmpVNode = resolveNewCustomComponent(initialVnode);
+        iterateOverCustomComponents(resolvedCmpVNode, attachVNodeHooks);
+      },
+      destroy(vCmpWrapper) {
+        const customCmp = vCmpWrapper[CustomComponentKey];
+        customCmp.stateListeners && customCmp.stateListeners.forEach((release) => release());
+      },
       prepatch(vOrigCmpWrapper, vCmpWrapper) {
-        console.log('Time to prepatch: ', clone(vOrigCmpWrapper), clone(vCmpWrapper));
-
         const origCustomCmp = vOrigCmpWrapper[CustomComponentKey];
         const customCmp = vCmpWrapper[CustomComponentKey];
 
-        customCmp.stateListeners = (origCustomCmp.stateLiseners || EmptyArray);
-
+        customCmp.stateListeners = origCustomCmp.stateListeners;
         customCmp.state = resolveComponentState(customCmp.props.$state);
 
         const cmpStateUnchanged = shallowEqual(customCmp.props, origCustomCmp.props) &&
@@ -75,7 +81,7 @@ export function bootstrap(queryEl, jsxComponentFactory, store) {
         }
 
         const customCmpVNode = customCmp.factory(customCmp.props, customCmp.state);
-        const resolveCustomCmpVNode = iterateOverCustomComponents(customCmpVNode, attachPrepatchHook)
+        const resolveCustomCmpVNode = iterateOverCustomComponents(customCmpVNode, attachVNodeHooks)
         vCmpWrapper.children = [resolveCustomCmpVNode];
       }
     });
