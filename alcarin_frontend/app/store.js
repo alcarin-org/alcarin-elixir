@@ -1,16 +1,16 @@
 import Baobab from 'baobab';
 import {inc, dec, is, ifElse, always} from 'ramda'
 
-window.Baobab = Baobab;
-const $tree = new Baobab({
+const tree$ = new Baobab({
   counter: [3],
 });
+window.Baobab = tree$;
 
 const increment = ifElse(is(Number), inc, always(1));
 const decrement = ifElse(is(Number), dec, always(1));
 
-const counter$ = $tree.select('counter');
-$tree.dispatch = function (action) {
+const counter$ = tree$.select('counter');
+tree$.dispatch = function (action) {
   switch (action.type) {
     case 'increase':
       return counter$.apply(action.index || 0, increment);
@@ -22,7 +22,7 @@ $tree.dispatch = function (action) {
   }
 }
 
-$tree.on('update', (e) => console.log(e.data.currentData));
+tree$.on('update', (e) => console.log(e.data.currentData));
 
-export default $tree;
+export default tree$;
 

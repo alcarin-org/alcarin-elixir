@@ -1,18 +1,18 @@
-import {clone} from 'ramda';
+import {mapObjIndexed, map, call} from 'ramda';
 import BaobabAdapterFactory from './store-adapter/baobab-adapter';
 import {shallowEqual, patch, iterateOverCustomComponents} from './utils';
 import {
   CustomComponentKey,
 } from './const';
 
-export function bootstrap(queryEl, jsxComponentFactory, store) {
+export function bootstrap(queryEl, jsxComponentFactory, tree$) {
   var lastVDom = null;
   const element = document.querySelector(queryEl);
   if (!element) {
     throw new Error(`Can't find "${queryEl}".`);
   }
 
-  const storeAdapter = BaobabAdapterFactory(store, updateUI);
+  const treeAdapter = BaobabAdapterFactory(tree$, updateUI);
   const vdom = jsxComponentFactory();
 
   const dummyEl = document.createElement('div');
@@ -29,15 +29,13 @@ export function bootstrap(queryEl, jsxComponentFactory, store) {
   }
 
   function resolveNewCustomComponent(vCmpWrapper) {
-    // vCmpWrapper.data.hook = Object.assign(vCmpWrapper.data.hook || {}, {
-    //   init() { console.warn('init')},
-    //   create() { console.warn('created')},
-    // });
-
     const customCmp = vCmpWrapper[CustomComponentKey];
     if (customCmp.props.$state) {
-      customCmp.stateListeners = Object.values(customCmp.props.$state)
-        .map(storeAdapter.updateOnStorePath);
+      const releaseListeners = mapObjIndexed(
+        (path, key) => treeAdapter.onPathUpdate(path, whenComponentStateNeedUpdate(customCmp, key)),
+        customCmp.props.$state
+      );
+      customCmp.release = () => map(call, releaseListeners);
     }
     customCmp.state = resolveComponentState(customCmp.props.$state);
     const componentVNode = customCmp.factory(customCmp.props, customCmp.state);
@@ -45,6 +43,13 @@ export function bootstrap(queryEl, jsxComponentFactory, store) {
     vCmpWrapper.children = [componentVNode];
 
     return componentVNode;
+  }
+
+  function whenComponentStateNeedUpdate(customCmp, key) {
+    return function onComponentStatePathUpdate(ev) {
+      customCmp.state[key] = ev.data.currentData;
+      customCmp.__needUpdate = true;
+    }
   }
 
   /**
@@ -64,18 +69,17 @@ export function bootstrap(queryEl, jsxComponentFactory, store) {
         iterateOverCustomComponents(resolvedCmpVNode, attachVNodeHooks);
       },
       destroy(vCmpWrapper) {
-        const customCmp = vCmpWrapper[CustomComponentKey];
-        customCmp.stateListeners && customCmp.stateListeners.forEach((release) => release());
+        vCmpWrapper[CustomComponentKey].release();
       },
       prepatch(vOrigCmpWrapper, vCmpWrapper) {
         const origCustomCmp = vOrigCmpWrapper[CustomComponentKey];
         const customCmp = vCmpWrapper[CustomComponentKey];
 
-        customCmp.stateListeners = origCustomCmp.stateListeners;
-        customCmp.state = resolveComponentState(customCmp.props.$state);
+        customCmp.release = origCustomCmp.release;
+        customCmp.state = origCustomCmp.state;
 
-        const cmpStateUnchanged = shallowEqual(customCmp.props, origCustomCmp.props) &&
-          shallowEqual(customCmp.state, origCustomCmp.state);
+        const cmpStateUnchanged = !customCmp.__needUpdate &&
+          shallowEqual(customCmp.props, origCustomCmp.props);
 
         if (cmpStateUnchanged) {
           return vCmpWrapper.children = vOrigCmpWrapper.children;
@@ -95,7 +99,7 @@ export function bootstrap(queryEl, jsxComponentFactory, store) {
     if ($stateDef) {
       for (let key in $stateDef) {
         let path = $stateDef[key];
-        state[key] = storeAdapter.getState(path);
+        state[key] = tree$.select(path.split('.')).get();
       }
     }
     return state;
