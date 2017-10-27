@@ -2,9 +2,9 @@ import {h} from 'snabbdom';
 import {is, head, omit, pick, flatten} from 'ramda';
 import {
   CustomComponentContainerClass,
-  CustomComponentKey,
+  JsxComponentDataKey,
   EmptyObject
-} from './const';
+} from './utils';
 
 const SnabbdomModulesAttrs = ['$hook', '$on', '$class', '$dataset', '$style', '$attrs'];
 const propsFilter = omit(SnabbdomModulesAttrs);
@@ -25,7 +25,7 @@ export default function jsx(jsxObject) {
       'customComponent': customComponent,
     });
     const customComponentWrapper = h('div.' + CustomComponentContainerClass, snabbdomModules);
-    customComponentWrapper[CustomComponentKey] = customComponent;
+    customComponentWrapper[JsxComponentDataKey] = customComponent;
 
     return customComponentWrapper;
   }
@@ -42,10 +42,9 @@ export default function jsx(jsxObject) {
  * @return {Function (state) -> vdom} Factory function that can be used to create Custom Element vdom later
  */
 function customComponentFactory(customComponentFn, componentContent) {
-  const factory = (props = EmptyObject, state = EmptyObject) => customComponentFn(Object.assign(
+  const factory = (totalState) => customComponentFn(Object.assign(
     {$children: componentContent},
-    props,
-    state
+    totalState
   ));
   // debug only
   Object.defineProperty(factory, 'name', {value: customComponentFn.name, writable: false});

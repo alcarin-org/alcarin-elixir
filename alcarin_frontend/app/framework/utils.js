@@ -6,9 +6,14 @@ import style from 'snabbdom/modules/style';
 import dataset from 'snabbdom/modules/dataset';
 import eventlisteners from 'snabbdom/modules/eventlisteners';
 import attributes from 'snabbdom/modules/attributes';
-import {
-  CustomComponentKey,
-} from './const';
+
+// TODO: make it shorter on prod build
+export const CustomComponentContainerClass = '__custom-component-container';
+export const JsxComponentDataKey = '__custom-component';
+export const EmptyObject = Object.freeze({});
+// value that should be available on Number.MAX_SAFE_INTEGER
+export const MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER || 9007199254740991;
+
 
 export const patch = init([
   classModule,
@@ -44,27 +49,4 @@ export function shallowEqual(objA, objB) {
   }
 
   return true;
-}
-
-export function iterateOverCustomComponents(vNode, componentResolveFn) {
-  if (!vNode) {
-    return;
-  }
-
-  const stack = [vNode];
-
-  while(stack.length > 0) {
-    let realVNode = stack.pop();
-    if (realVNode === undefined) {
-      continue;
-    }
-    if (realVNode[CustomComponentKey]) {
-      realVNode = componentResolveFn(realVNode);
-    }
-    if (realVNode.children) {
-      [].push.apply(stack, realVNode.children);
-    }
-  }
-
-  return vNode;
 }
