@@ -10,7 +10,7 @@ export default function BaobabAdapter($tree, updateCallback) {
     updateQueued = true;
     setTimeout(() => {
       updateCallback();
-      console.log('current update listeners: ', listeners.counter)
+      // console.log('current update listeners: ', listeners)
       updateQueued = false;
     }, 0);
   }
@@ -33,10 +33,9 @@ export default function BaobabAdapter($tree, updateCallback) {
         // we don't calling "release" as cursors are "shared"
         // inside tree - and it would could destroy cursors used
         // in unknown places.
-        // TODO: checking if simple cursor (string only like these)
-        // will auto-cleanup memory after lost reference
         listeners[path].power--;
         if (listeners[path].power <= 0) {
+          listeners[path].cursor.off('update', meaningfulStateChanged);
           delete listeners[path];
         }
       };

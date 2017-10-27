@@ -36,7 +36,8 @@ export function bootstrap(queryEl, jsxComponentFactory, store) {
 
     const customCmp = vCmpWrapper[CustomComponentKey];
     if (customCmp.props.$state) {
-      customCmp.stateListeners = customCmp.props.$state.map(storeAdapter.updateOnStorePath);
+      customCmp.stateListeners = Object.values(customCmp.props.$state)
+        .map(storeAdapter.updateOnStorePath);
     }
     customCmp.state = resolveComponentState(customCmp.props.$state);
     const componentVNode = customCmp.factory(customCmp.props, customCmp.state);
@@ -89,12 +90,12 @@ export function bootstrap(queryEl, jsxComponentFactory, store) {
     return vNode;
   }
 
-  function resolveComponentState($state) {
+  function resolveComponentState($stateDef) {
     const state = {};
-    if ($state) {
-      for (let i = 0; i < $state.length; i++) {
-        let path = $state[i];
-        state[path] = storeAdapter.getState(path);
+    if ($stateDef) {
+      for (let key in $stateDef) {
+        let path = $stateDef[key];
+        state[key] = storeAdapter.getState(path);
       }
     }
     return state;

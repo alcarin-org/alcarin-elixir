@@ -5,8 +5,6 @@ import {bootstrap} from './framework';
 
 bootstrap(
   '#app',
-  () => <MainComponent btnLabel='just test' checked={true} $state={['counter']}/>,
+  () => <MainComponent btnLabel='just test' checked={true} $state={{counter: 'counter.0'}}/>,
   store
 );
-
-// setInterval(() => store.dispatch({type: 'increase'}), 3000);

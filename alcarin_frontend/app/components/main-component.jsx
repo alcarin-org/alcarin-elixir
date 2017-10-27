@@ -16,8 +16,8 @@ export function MainComponent({counter, btnLabel}) {
       <button id="clickme" className="btn" onclick={increase}>
         {btnLabel}
       </button>
-      { range(0, counter).map(() => (
-        <ContainerComponent label="It's a 2th placeholder" $state={['counter']} />
+      { range(0, counter).map((i) => (
+        <ContainerComponent label="It's a 2th placeholder" index={i} $state={{counter: 'counter.' + i}} />
       ) ) }
     </div>
   )
