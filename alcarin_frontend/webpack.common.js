@@ -1,5 +1,6 @@
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 
 module.exports = {
   context: __dirname + '/app',
@@ -32,6 +33,8 @@ module.exports = {
     ]
   },
   plugins: [
+    new CleanWebpackPlugin(['build']),
+
     new HtmlWebpackPlugin({template: './index.html'}),
 
     new webpack.optimize.CommonsChunkPlugin({
