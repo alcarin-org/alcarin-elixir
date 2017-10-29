@@ -10,6 +10,14 @@ const SnabbdomModulesAttrs = ['$hook', '$on', '$class', '$dataset', '$style', '$
 const propsFilter = omit(SnabbdomModulesAttrs);
 const snabbdomModulesFilter = pick(SnabbdomModulesAttrs);
 
+/**
+ * Transforms "babel-plugin-transform-jsx" jsx structures to "snabbdom" vdom.
+ * For Custom Components create component factory function that let system
+ * to deffer (or ignore) component creation.
+ *
+ * @param      {object}    jsxObject  The jsx object (output from "babel-plugin-transform-jsx" lib)
+ * @return     {vdom}  { vdom returned by "snabbdom" lib}
+ */
 export default function jsx(jsxObject) {
   const children = jsxObject.children ? flatten(jsxObject.children) : [];
   const snabbdomModules = resolveSnabbdomModules(jsxObject.attributes);
@@ -21,9 +29,10 @@ export default function jsx(jsxObject) {
       factory: customComponentFactory(jsxObject.elementName, children)
     };
     // DEV MODE ONLY, FOR DEBUG PURPOSES
-    snabbdomModules.props = Object.assign(snabbdomModules.props || {}, {
+    DEBUG && (snabbdomModules.props = Object.assign(snabbdomModules.props || {}, {
       'customComponent': customComponent,
-    });
+    }));
+    DEBUG && console.log('attached', customComponent);
     const customComponentWrapper = h('div.' + CustomComponentContainerClass, snabbdomModules);
     customComponentWrapper[JsxComponentDataKey] = customComponent;
 
