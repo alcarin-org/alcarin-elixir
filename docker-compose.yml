@@ -11,7 +11,7 @@ services:
     volumes:
       - ./alcarin_frontend:/code
     ports:
-      - "8080:3333"
+      - "8080:8080"
       - "9485:9485"
 
   api:

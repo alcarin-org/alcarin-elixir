@@ -1,10 +1,11 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const webpack = require('webpack');
 
 module.exports = {
   context: __dirname + '/app',
   entry: './app.jsx',
   output: {
-    filename: 'app.js',
+    filename: 'app.[chunkhash].js',
     path: __dirname + '/build',
   },
   resolve: {
@@ -32,5 +33,14 @@ module.exports = {
   },
   plugins: [
     new HtmlWebpackPlugin({template: './index.html'}),
+
+    new webpack.optimize.CommonsChunkPlugin({
+        name: 'vendor',
+        filename: 'vendor.[chunkhash].js',
+        minChunks(module, count) {
+            var context = module.context;
+            return context && context.indexOf('node_modules') >= 0;
+        },
+    }),
   ]
 };
