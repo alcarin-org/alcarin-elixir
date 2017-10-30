@@ -1,7 +1,6 @@
-import {mapObjIndexed, map, call} from 'ramda';
 import StateManagerFactory from './state-manager';
-import {patch} from './utils';
-import {attachUpdateHooks} from './vnode-update-hooks';
+import { patch } from './utils';
+import { attachUpdateHooks } from './vnode-update-hooks';
 
 export function bootstrap(queryEl, jsxComponentFactory, tree$) {
   var lastVDom = document.querySelector(queryEl);
@@ -14,9 +13,9 @@ export function bootstrap(queryEl, jsxComponentFactory, tree$) {
 
   function updateUI() {
     const rootVDom = jsxComponentFactory();
-    return lastVDom = patch(
+    return (lastVDom = patch(
       lastVDom,
       attachUpdateHooks(rootVDom, stateManager)
-    );
+    ));
   }
 }

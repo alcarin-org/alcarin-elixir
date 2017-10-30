@@ -1,6 +1,4 @@
-import {
-  JsxComponentDataKey,
-} from './utils';
+import { JsxComponentDataKey } from './utils';
 
 export function attachUpdateHooks(vNode, stateManager) {
   return iterateOverCustomComponents(vNode, attachVNodeHooks);
@@ -35,16 +33,18 @@ export function attachUpdateHooks(vNode, stateManager) {
           vCmpWrapper[JsxComponentDataKey]
         );
         if (!cmpStateChanged) {
-          return vCmpWrapper.children = vOrigCmpWrapper.children;
+          return (vCmpWrapper.children = vOrigCmpWrapper.children);
         }
 
-        const state = stateManager.componentTotalState(vOrigCmpWrapper.$componentKey);
+        const state = stateManager.componentTotalState(
+          vOrigCmpWrapper.$componentKey
+        );
         const resolveCustomCmpVNode = iterateOverCustomComponents(
           vCmpWrapper[JsxComponentDataKey].factory(state),
           attachVNodeHooks
         );
         vCmpWrapper.children = [resolveCustomCmpVNode];
-      }
+      },
     });
     return vNode;
   }
@@ -56,8 +56,7 @@ function iterateOverCustomComponents(vNode, componentResolveFn) {
   }
 
   const stack = [vNode];
-  const parents = [null];
-  while(stack.length > 0) {
+  while (stack.length > 0) {
     let realVNode = stack.pop();
     if (realVNode === undefined) {
       continue;

@@ -1,4 +1,4 @@
-import {init} from 'snabbdom';
+import { init } from 'snabbdom';
 
 import classModule from 'snabbdom/modules/class';
 import props from 'snabbdom/modules/props';
@@ -13,7 +13,6 @@ export const JsxComponentDataKey = '__custom-component';
 export const EmptyObject = Object.freeze({});
 // value that should be available on Number.MAX_SAFE_INTEGER
 export const MAX_SAFE_INTEGER = Number.MAX_SAFE_INTEGER || 9007199254740991;
-
 
 export const patch = init([
   classModule,

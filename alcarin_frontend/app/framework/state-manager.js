@@ -1,10 +1,5 @@
-import {set, mapObjIndexed, call, map} from 'ramda';
-
-import {
-  shallowEqual,
-  JsxComponentDataKey,
-  MAX_SAFE_INTEGER,
-} from './utils';
+import { mapObjIndexed, call, map } from 'ramda';
+import { shallowEqual, JsxComponentDataKey, MAX_SAFE_INTEGER } from './utils';
 
 export default function StateManager(tree$, updateCallback) {
   const componentsMap = {};
@@ -38,16 +33,17 @@ export default function StateManager(tree$, updateCallback) {
         $stateDef
       );
 
-      const componentSummaryState = componentsMap[cmpId] = {
+      const componentSummaryState = (componentsMap[cmpId] = {
         props: jsxComponentData.props,
         state,
-      };
+      });
 
       componentSummaryState['listenersRemovers'] = mapObjIndexed(
-        (path, key) => onPathUpdate(path, (ev) => {
-          componentSummaryState.state[key] = ev.data.currentData;
-          componentSummaryState.needUpdate = true;
-        }),
+        (path, key) =>
+          onPathUpdate(path, ev => {
+            componentSummaryState.state[key] = ev.data.currentData;
+            componentSummaryState.needUpdate = true;
+          }),
         $stateDef
       );
 
@@ -61,11 +57,18 @@ export default function StateManager(tree$, updateCallback) {
       const componentSummaryState = componentsMap[cmpId];
       const needUpdate = componentSummaryState.needUpdate;
       componentSummaryState.needUpdate = false;
-      return needUpdate || !shallowEqual(componentSummaryState.props, jsxComponentData.props);
+      return (
+        needUpdate ||
+        !shallowEqual(componentSummaryState.props, jsxComponentData.props)
+      );
     },
     componentTotalState(cmpId) {
       const componentSummaryState = componentsMap[cmpId];
-      return Object.assign({}, componentSummaryState.props, componentSummaryState.state);
+      return Object.assign(
+        {},
+        componentSummaryState.props,
+        componentSummaryState.state
+      );
     },
   };
 
