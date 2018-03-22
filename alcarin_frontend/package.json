@@ -3,14 +3,22 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "react": "^16.2.0",
-    "react-dom": "^16.2.0",
+    "baobab": "^2.5.2",
+    "ramda": "^0.25.0",
+    "react": "16.3.0-alpha.2",
+    "react-dom": "16.3.0-alpha.2",
     "react-scripts": "1.1.1"
+  },
+  "devDependencies": {
+    "prettier": "^1.11.1",
+    "eslint-config-prettier": "^2.9.0",
+    "eslint-plugin-prettier": "^2.6.0"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "eslint ./src"
   }
 }
