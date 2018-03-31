@@ -1,26 +1,18 @@
 # This file is responsible for configuring your application
 # and its dependencies with the aid of the Mix.Config module.
-#
-# This configuration file is loaded before any dependency and
-# is restricted to this project.
 use Mix.Config
 
-# General application configuration
-config :alcarin_api,
-  ecto_repos: [AlcarinApi.Repo]
-
-# Configures the endpoint
-config :alcarin_api, AlcarinApiWeb.Endpoint,
-  url: [host: "localhost"],
-  secret_key_base: "YuaA1UPzjtE92lK9JpFGpryBleIgfGVUDZH//qkvuPSf95MW5sB5IyZoUJZZBeC7",
-  render_errors: [view: AlcarinApiWeb.ErrorView, accepts: ~w(json)],
-  pubsub: [name: AlcarinApi.PubSub,
-           adapter: Phoenix.PubSub.PG2]
+# By default, the umbrella project as well as each child
+# application will require this configuration file, ensuring
+# they all use the same configuration. While one could
+# configure all applications here, we prefer to delegate
+# back to each application for organization purposes.
+import_config "../apps/*/config/config.exs"
 
 # Configures Elixir's Logger
 config :logger, :console,
   format: "$time $metadata[$level] $message\n",
-  metadata: [:request_id]
+  metadata: [:user_id]
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
