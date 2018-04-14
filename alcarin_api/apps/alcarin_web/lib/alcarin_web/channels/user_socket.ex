@@ -2,7 +2,7 @@ defmodule AlcarinWeb.UserSocket do
   use Phoenix.Socket
 
   ## Channels
-  channel "room:*", AlcarinWeb.RoomChannel
+  channel "character-feed:*", AlcarinWeb.CharacterFeedChannel
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket

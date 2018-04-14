@@ -1,11 +1,11 @@
-defmodule AlcarinWeb.RoomChannel do
+defmodule AlcarinWeb.CharacterFeedChannel do
   use Phoenix.Channel
 
-  def join("room:lobby", _message, socket) do
+  def join("character-feed:lobby", _message, socket) do
     {:ok, %{test:  5}, socket}
   end
 
-  def join("room:" <> _private_room_id, _params, _socket) do
+  def join("character-feed:" <> _character_id, _params, _socket) do
     {:error, %{reason: "unauthorized"}}
   end
 

@@ -1,5 +1,9 @@
 import { branch } from '../store/branch';
 import TestComponent from '../components/Test';
-import { increase } from '../store/actions';
+import { join } from '../store/actions/character-feed';
 
-export const Test = branch({ counter: 'counter' }, { increase }, TestComponent);
+export const Test = branch(
+  { characterFeedConnected: 'characterFeedConnected' },
+  { join },
+  TestComponent
+);

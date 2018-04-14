@@ -3,6 +3,7 @@ import { createContext } from 'react';
 
 const Store = new Baobab({
   counter: 1,
+  characterFeedConnected: false,
 });
 
 // console.log(Baobab.prototype.select.apply(Store, ['counter']))
