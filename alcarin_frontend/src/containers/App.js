@@ -2,13 +2,14 @@ import React, { Component } from 'react';
 
 import './App.css';
 
-import { Test } from './BranchedComponents';
+// import { Test } from './BranchedComponents';
+import CharacterFeed from './character/CharacterFeed';
 
 export default class App extends Component {
   render() {
     return (
-      <div className="App">
-        <Test />
+      <div className="alcarin">
+        <CharacterFeed />
       </div>
     );
   }

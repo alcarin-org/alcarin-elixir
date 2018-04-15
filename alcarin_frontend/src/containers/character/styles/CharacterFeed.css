@@ -1,0 +1,4 @@
+.character-feed {
+  display: flex;
+  flex-flow: column nowrap;
+}
