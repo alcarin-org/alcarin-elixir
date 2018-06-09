@@ -10,7 +10,7 @@ import FeedMessageInput from '../../components/character/FeedMessageInput';
 const messages = [
   { content: 'First message' },
   { content: 'Second message' },
-  { content: 'Third message' },
+  { content: 'Third messag2e' },
 ];
 
 export default class CharacterFeed extends React.PureComponent {
@@ -18,7 +18,11 @@ export default class CharacterFeed extends React.PureComponent {
     msgContent: '',
   };
 
-  onChange = ev => this.setState({ msgContent: ev.target.value });
+  onChange = ev => {
+    this.setState({ msgContent: ev.target.value })
+    console.info(this.props.onChange, ev.target.value)
+    this.props.onChange(ev.target.value);
+  }
 
   render() {
     return (
