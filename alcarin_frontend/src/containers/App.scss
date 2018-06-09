@@ -1,3 +1,18 @@
+$background-default: #3F444A;
+$font-default: #f2f2f2;
+$font-header: #fff;
+
+body {
+  /*font-family: droid sans;*/
+  background: $background-default;
+  color: $font-default;
+  letter-spacing: 0.15em;
+}
+
+.alcarin {
+
+}
+
 .App {
   text-align: center;
 }

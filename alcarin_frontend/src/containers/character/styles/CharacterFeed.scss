@@ -1,0 +1,13 @@
+.character-feed {
+  display: flex;
+  flex-flow: column nowrap;
+}
+
+.feed-message-input {
+  padding: 0 30px;
+  backgorund: red;
+}
+
+.feed-message-input input {
+  width: 100%;
+}
