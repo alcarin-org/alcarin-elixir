@@ -5,7 +5,7 @@ volumes:
 
 services:
   web:
-    image: node:9.8-slim
+    image: node:9.11-slim
     working_dir: /code
     command: npm start
     volumes:
