@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FeedMessageType } from '../../store/types/character';
+import { FeedMessageType } from '../../../store/types/character';
 
-export default function CharacterFeedPresenter({ feedMessages }) {
+export default function GameEventsList({ feedMessages }) {
   return (
     <ul className="character-feed-presenter">
       {feedMessages.map((msg, ind) => <li key={ind}>{msg.content}</li>)}
@@ -10,6 +10,6 @@ export default function CharacterFeedPresenter({ feedMessages }) {
   );
 }
 
-CharacterFeedPresenter.propTypes = {
+GameEventsList.propTypes = {
   feedMessages: PropTypes.arrayOf(FeedMessageType()).isRequired,
 };

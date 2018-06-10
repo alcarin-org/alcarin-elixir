@@ -10,6 +10,9 @@ import CharacterFeed from './CharacterFeed';
 storiesOf('CharacterFeed', module).add(
   'default',
   withNotes('E.g. note')(() => (
-    <CharacterFeed label={text('label', 'test')} onChange={action('change2')} />
+    <CharacterFeed
+      label={text('label', 'test')}
+      onSubmit={action('Input submitted')}
+    />
   ))
 );
