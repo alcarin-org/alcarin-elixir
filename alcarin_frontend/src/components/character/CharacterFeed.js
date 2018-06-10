@@ -1,6 +1,7 @@
 import './styles/CharacterFeed.css';
 
 import React from 'react';
+
 // import PropTypes from 'prop-types';
 // import { FeedMessageType } from '../../store/types/character';
 
@@ -13,16 +14,16 @@ const messages = [
   { content: 'Third messag2e' },
 ];
 
-export default class CharacterFeed extends React.PureComponent {
+export class CharacterFeed extends React.PureComponent {
   state = {
     msgContent: '',
   };
 
   onChange = ev => {
-    this.setState({ msgContent: ev.target.value })
-    console.info(this.props.onChange, ev.target.value)
+    this.setState({ msgContent: ev.target.value });
+    console.info(this.props.onChange, ev.target.value);
     this.props.onChange(ev.target.value);
-  }
+  };
 
   render() {
     return (

@@ -1,23 +1,15 @@
-import Baobab from 'baobab';
-import { createContext } from 'react';
+import { createStore, combineReducers, applyMiddleware } from 'redux';
 
-const Store = new Baobab({
-  counter: 1,
-  characterFeedConnected: false,
-});
+import TestReducer from './redux/TestRedux';
+import CharacterFeedReducer from './redux/CharacterFeedRedux';
+import asyncCallerMiddleware from './actions-async-handlers/index';
 
-// console.log(Baobab.prototype.select.apply(Store, ['counter']))
-
-export const StoreContext = createContext({
-  store: null,
-});
-
-var i = 0;
-setInterval(function() {
-  Store.select('text').set('test' + i++);
-}, 2000);
-export default Store;
-
-// module.exports = {
-//   select: (path) => Baobab.prototype.select.call(Store, [path])
-// }
+export default function createReduxStore() {
+  return createStore(
+    combineReducers({
+      characterFeed: CharacterFeedReducer,
+      test: TestReducer,
+    }),
+    applyMiddleware(asyncCallerMiddleware)
+  );
+}

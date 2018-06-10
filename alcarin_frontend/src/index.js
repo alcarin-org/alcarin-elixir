@@ -1,11 +1,14 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux'
+
 import './index.css';
 import App from './containers/App';
 import registerServiceWorker from './registerServiceWorker';
-import Store, { StoreContext } from './store/Store';
+import createReduxStore from './store/Store';
 
 const $root = document.getElementById('root');
+const store = createReduxStore();
 
 renderApp(App);
 
@@ -20,9 +23,9 @@ registerServiceWorker();
 
 function renderApp(App) {
   ReactDOM.render(
-    <StoreContext.Provider value={{ store: Store }}>
+    <Provider store={store}>
       <App />
-    </StoreContext.Provider>,
+    </Provider>,
     $root
   );
 }

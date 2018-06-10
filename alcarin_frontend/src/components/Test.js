@@ -3,13 +3,12 @@ import PropTypes from 'prop-types';
 
 import logo from '../resources/logo.svg';
 
-export default function Test({ characterFeedConnected, join }) {
-  console.info('rerender test', characterFeedConnected);
+export default function Test({ inProgress, characterFeedConnected, join }) {
   return (
     <div className="Test">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        <h1 className="App-title">Welcome to React</h1>
+        <h1 className="App-title">Welcome to React ({inProgress ? 'in progress' : 'not in progress'})</h1>
         {characterFeedConnected ? (
           <span>Connected!</span>
         ) : (
@@ -24,6 +23,6 @@ export default function Test({ characterFeedConnected, join }) {
 }
 
 Test.propTypes = {
-  // counter: PropTypes.number.isRequired,
-  // increase: PropTypes.func.isRequired,
+  characterFeedConnected: PropTypes.bool.isRequired,
+  join: PropTypes.func.isRequired,
 };
