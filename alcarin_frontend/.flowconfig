@@ -1,4 +1,7 @@
 [ignore]
+.*/build/.*
+.*/public/.*
+.*/storybook-static/.*
 
 [include]
 
