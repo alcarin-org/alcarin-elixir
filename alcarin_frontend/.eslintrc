@@ -25,7 +25,6 @@
     "flowtype/delimiter-dangle": [2, "always-multiline"],
     "flowtype/no-primitive-constructor-types": 2,
     "flowtype/no-types-missing-file-annotation": 0,
-    "flowtype/no-weak-types": 1,
     "flowtype/generic-spacing": 0,
     "flowtype/object-type-delimiter": [2, "comma"],
     "flowtype/require-valid-file-annotation": 2,
@@ -36,6 +35,7 @@
     "flowtype/type-id-match": [2, "^([A-Z][a-z0-9]+)+Type$"],
     "flowtype/union-intersection-spacing": [2, "always"],
     "flowtype/use-flow-type": 1,
-    "flowtype/valid-syntax": 1
+    "flowtype/valid-syntax": 1,
+    "flowtype/require-exact-type": [2, "always"]
   }
 }

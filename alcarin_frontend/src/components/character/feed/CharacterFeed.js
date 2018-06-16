@@ -7,24 +7,25 @@ import React from 'react';
 import GameEventsList from './GameEventsList';
 import FeedMessageInput from './FeedMessageInput';
 
-type GameEventType = {
+type GameEventType = {|
   content: string,
-};
+|};
 
-type CharacterPropertyStateType = {
+type CharacterPropertyStateType = {|
   chatInput: string,
   gameEvents: GameEventType[],
-};
+|};
+type OnInputChangeType = (SyntheticInputEvent<HTMLInputElement>) => any;
 
-export type ComponentPropsType = {
+type ComponentPropsType = {|
   label?: string,
-  onSubmit: (state: CharacterPropertyStateType) => void,
-};
+  onSubmit: (state: CharacterPropertyStateType) => any,
+|};
 
 const Messages: GameEventType[] = [
   { content: 'First message' },
   { content: 'Second message' },
-  { content: 'Third messag2e' },
+  { content: 'Third message' },
 ];
 
 export default class CharacterFeed extends React.PureComponent<
@@ -36,7 +37,7 @@ export default class CharacterFeed extends React.PureComponent<
     gameEvents: [...Messages],
   };
 
-  onInputChange = (ev: SyntheticInputEvent<HTMLInputElement>) =>
+  onInputChange: OnInputChangeType = ev =>
     this.setState({ chatInput: ev.target.value });
 
   onSubmit = (ev: SyntheticEvent<HTMLFormElement>) => {
