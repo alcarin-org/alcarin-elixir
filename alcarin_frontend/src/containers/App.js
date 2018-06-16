@@ -1,15 +1,26 @@
-import React, { Component } from 'react';
+// @flow
+
+import React from 'react';
 
 import './App.css';
 
-import { TestContainer } from './TestContainer';
-// import CharacterFeed from './character/CharacterFeed';
+// import { TestContainer } from './TestContainer';
+import CharacterFeed from './character/CharacterFeedContainer';
 
-export default class App extends Component {
+type TestPropsType = { test: string };
+
+class Test extends React.PureComponent<TestPropsType> {
+  render() {
+    return this.props.test;
+  }
+}
+
+export default class App extends React.PureComponent<{}> {
   render() {
     return (
       <div className="alcarin">
-        <TestContainer />
+        <Test test="5" />
+        <CharacterFeed onSubmit={() => undefined} />
       </div>
     );
   }

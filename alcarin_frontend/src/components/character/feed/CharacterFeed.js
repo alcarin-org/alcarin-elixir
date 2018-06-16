@@ -1,25 +1,45 @@
+// @flow
+
 import './styles/CharacterFeed.css';
 
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import GameEventsList from './GameEventsList';
 import FeedMessageInput from './FeedMessageInput';
 
-const Messages = [
+type GameEventType = {
+  content: string,
+};
+
+type CharacterPropertyStateType = {
+  chatInput: string,
+  gameEvents: GameEventType[],
+};
+
+export type ComponentPropsType = {
+  label?: string,
+  onSubmit: (state: CharacterPropertyStateType) => void,
+};
+
+const Messages: GameEventType[] = [
   { content: 'First message' },
   { content: 'Second message' },
   { content: 'Third messag2e' },
 ];
 
-export default class CharacterFeed extends React.PureComponent {
+export default class CharacterFeed extends React.PureComponent<
+  ComponentPropsType,
+  CharacterPropertyStateType
+> {
   state = {
     chatInput: '',
     gameEvents: [...Messages],
   };
 
-  onInputChange = ev => this.setState({ chatInput: ev.target.value });
-  onSubmit = ev => {
+  onInputChange = (ev: SyntheticInputEvent<HTMLInputElement>) =>
+    this.setState({ chatInput: ev.target.value });
+
+  onSubmit = (ev: SyntheticEvent<HTMLFormElement>) => {
     ev.preventDefault();
     this.props.onSubmit(this.state);
     this.setState({
@@ -45,8 +65,3 @@ export default class CharacterFeed extends React.PureComponent {
     );
   }
 }
-
-CharacterFeed.propTypes = {
-  label: PropTypes.string,
-  onSubmit: PropTypes.func.isRequired,
-};

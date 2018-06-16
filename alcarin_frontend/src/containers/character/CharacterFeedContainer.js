@@ -1,9 +1,17 @@
+// @flow
+//
+import { type ComponentType } from 'react';
 import { connect } from 'react-redux';
 
-import CharacterFeed from '../components/CharacterFeed';
-// import { Creators as FeedActions } from '../store/redux/CharacterFeedRedux';
+import CharacterFeed from '../../components/character/feed/CharacterFeed';
 
-export const CounterContainer = connect(
-  state => {},
+type CharacterFeedPropsType = {
+  onSubmit: (state: string) => void,
+};
+
+const CharacterFeedContainer: ComponentType<CharacterFeedPropsType> = connect(
+  null,
   {}
 )(CharacterFeed);
+
+export default CharacterFeedContainer;
