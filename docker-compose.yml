@@ -18,8 +18,11 @@ services:
     build: ./alcarin_api
     working_dir: /code
     command: mix phx.server
+    environment:
+      - DISPLAY
     volumes:
       - ./alcarin_api:/code
+      - /tmp/.X11-unix:/tmp/.X11-unix
     ports:
       - "4000:4000"
     depends_on:
