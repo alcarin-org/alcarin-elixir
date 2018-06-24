@@ -13,4 +13,14 @@ defmodule AlcarinWeb.CharacterFeedChannel do
     IO.puts new_msg
     {:noreply, socket}
   end
+
+  def handle_in("communication:say", %{"content" => new_msg}, socket) do
+    IO.puts ['--------', new_msg]
+    {:noreply, socket}
+  end
+
+  def handle_in(msg, _, socket) do
+    IO.puts ['Unknown message', msg]
+    {:noreply, socket}
+  end
 end

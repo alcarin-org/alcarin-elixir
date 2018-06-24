@@ -19,7 +19,7 @@ type OnInputChangeType = (SyntheticInputEvent<HTMLInputElement>) => any;
 
 type ComponentPropsType = {|
   label?: string,
-  onSubmit: (state: CharacterPropertyStateType) => any,
+  onSubmit?: (state: CharacterPropertyStateType) => any,
 |};
 
 const Messages: GameEventType[] = [
@@ -42,7 +42,7 @@ export default class CharacterFeed extends React.PureComponent<
 
   onSubmit = (ev: SyntheticEvent<HTMLFormElement>) => {
     ev.preventDefault();
-    this.props.onSubmit(this.state);
+    this.props.onSubmit && this.props.onSubmit(this.state);
     this.setState({
       chatInput: '',
       gameEvents: this.state.gameEvents.concat({

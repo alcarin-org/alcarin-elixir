@@ -1,14 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Provider } from 'react-redux';
+import { Provider as StoreProvier } from 'react-redux';
+import { BrowserRouter, Route } from 'react-router-dom';
 
 import './index.css';
 import App from './containers/App';
 import registerServiceWorker from './registerServiceWorker';
 import createReduxStore from './store/Store';
+import { SocketContext, createSocketConnection } from './services/Socket';
 
 const $root = document.getElementById('root');
 const store = createReduxStore();
+const socket = createSocketConnection();
 
 renderApp(App);
 
@@ -23,9 +26,13 @@ registerServiceWorker();
 
 function renderApp(App) {
   ReactDOM.render(
-    <Provider store={store}>
-      <App />
-    </Provider>,
+    <StoreProvier store={store}>
+      <SocketContext.Provider value={socket}>
+        <BrowserRouter>
+          <Route path="/" component={App} />
+        </BrowserRouter>
+      </SocketContext.Provider>
+    </StoreProvier>,
     $root
   );
 }

@@ -1,8 +1,8 @@
-import { Types as TestTypes } from '../redux/TestRedux';
-import { testActionHandler } from './TestActionHandler';
+// import { Types as TestTypes } from '../redux/TestRedux';
+// import { testActionHandler } from './TestActionHandler';
 
 const AsyncActions = [
-  [TestTypes.Connect, testActionHandler]
+  // [TestTypes.Connect, testActionHandler]
 ];
 
 export default function asyncCallerMiddleware() {
