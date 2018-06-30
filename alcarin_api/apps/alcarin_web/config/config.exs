@@ -25,7 +25,8 @@ config :logger, :console,
   metadata: [:request_id]
 
 config :alcarin_web, :generators,
-  context_app: :alcarin
+  context_app: :alcarin,
+  binary_id: true
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
