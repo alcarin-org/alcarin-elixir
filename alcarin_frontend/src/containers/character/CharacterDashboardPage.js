@@ -56,7 +56,9 @@ export class CharacterDashboardPage extends React.PureComponent<
   onSay = msg =>
     this.sendMessage(PushNamespace.Communication, PushAction.Say, {
       content: msg.chatInput,
-    });
+    })
+      .receive('ok', console.log)
+      .receive('error', console.error);
 
   render() {
     return (

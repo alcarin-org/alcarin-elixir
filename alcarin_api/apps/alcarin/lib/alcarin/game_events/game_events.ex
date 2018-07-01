@@ -22,50 +22,21 @@ defmodule Alcarin.GameEvents do
   end
 
   @doc """
-  Gets a single game_event.
-
-  Raises `Ecto.NoResultsError` if the Game event does not exist.
+  Creates a game speak event.
 
   ## Examples
 
-      iex> get_game_event!(123)
-      %GameEvent{}
-
-      iex> get_game_event!(456)
-      ** (Ecto.NoResultsError)
-
-  """
-  def get_game_event!(id), do: Repo.get!(GameEvent, id)
-
-  @doc """
-  Creates a game_event.
-
-  ## Examples
-
-      iex> create_game_event(%{field: value})
+      iex> create_speak_event(%{content: "Help me, please"})
       {:ok, %GameEvent{}}
 
-      iex> create_game_event(%{field: bad_value})
+      iex> create_speak_event(%{field: ""})
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_game_event(attrs \\ %{}) do
+  def create_speak_event(content) do
     %GameEvent{}
-    |> GameEvent.changeset(attrs)
+    |> GameEvent.changeset(%{type: :speak, args: %{content: content}})
     |> Repo.insert()
   end
 
-
-  @doc """
-  Returns an `%Ecto.Changeset{}` for tracking game_event changes.
-
-  ## Examples
-
-      iex> change_game_event(game_event)
-      %Ecto.Changeset{source: %GameEvent{}}
-
-  """
-  def change_game_event(%GameEvent{} = game_event) do
-    GameEvent.changeset(game_event, %{})
-  end
 end

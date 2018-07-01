@@ -16,7 +16,7 @@ services:
 
   api:
     build: ./alcarin_api
-    working_dir: /code
+    working_dir: /code/apps/alcarin_web
     command: mix phx.server
     environment:
       - DISPLAY
@@ -26,12 +26,13 @@ services:
     ports:
       - "4000:4000"
     depends_on:
-      - postgres
+      - db
     links:
-      - postgres:postgres.link
+      - db:postgres.link
 
-  postgres:
+  db:
     image: postgres:9.6
+    command: postgres -c log_statement='all'
     volumes:
       - alcarin_api_data:/var/lib/postgresql/data
     environment:

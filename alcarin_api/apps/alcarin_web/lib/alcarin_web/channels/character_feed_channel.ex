@@ -12,13 +12,8 @@ defmodule AlcarinWeb.CharacterFeedChannel do
     {:error, %{reason: "unauthorized"}}
   end
 
-  def handle_in("msg", %{"msg" => new_msg}, socket) do
-    IO.puts new_msg
-    {:noreply, socket}
-  end
-
   def handle_in("communication:say", %{"content" => new_msg}, socket) do
-    case GameEvents.create_game_event(%{type: :speak, args: %{content: new_msg}}) do
+    case GameEvents.create_speak_event(new_msg) do
       {:ok, game_event} ->
         {:reply, :ok, socket}
       {:error, %Ecto.Changeset{} = changeset} ->
