@@ -17,9 +17,10 @@
     "jest": true
   },
   "globals": {},
-  "plugins": ["prettier", "react", "flowtype"],
+  "plugins": ["react", "prettier", "flowtype"],
   "rules": {
     "prettier/prettier": "error",
+    "react/no-deprecated": 1,
     "flowtype/boolean-style": [2, "boolean"],
     "flowtype/define-flow-type": 1,
     "flowtype/delimiter-dangle": [2, "always-multiline"],

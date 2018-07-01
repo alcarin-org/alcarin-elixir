@@ -5,7 +5,10 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Socket, Channel } from 'phoenix';
+import { always } from 'ramda';
+
 import CharacterFeed from '../../components/character/feed/CharacterFeed';
+import { Creators as FeedActions } from '../../store/redux/CharacterFeedRedux';
 import {
   PushNamespace,
   PushAction,
@@ -42,6 +45,7 @@ export class CharacterDashboardPage extends React.PureComponent<
         console.log('Unable to join to character feed channel', reason);
         // dispatch(TestCreators.connectionStateChanged(false));
       });
+    this.props.fetchCharacterFeed();
   }
 
   componentWillUnmount() {
@@ -53,18 +57,26 @@ export class CharacterDashboardPage extends React.PureComponent<
     return this.channel.push(`${ns}:${action}`, params);
   };
 
-  onSay = msg =>
-    this.sendMessage(PushNamespace.Communication, PushAction.Say, {
+  onSay = msg => {
+    this.props.putGameEvent({
+      type: 'speak',
+      args: { content: msg.chatInput },
+    });
+    return this.sendMessage(PushNamespace.Communication, PushAction.Say, {
       content: msg.chatInput,
     })
       .receive('ok', console.log)
       .receive('error', console.error);
+  };
 
   render() {
     return (
       <div className="page">
         {this.state.connected ? (
-          <CharacterFeed onSubmit={this.onSay} />
+          <CharacterFeed
+            gameEvents={this.props.gameEvents}
+            onSubmit={this.onSay}
+          />
         ) : (
           <span className="spinner">Connecting</span>
         )}
@@ -73,4 +85,10 @@ export class CharacterDashboardPage extends React.PureComponent<
   }
 }
 
-export default connect()(CharacterDashboardPage);
+export default connect(
+  state => ({ gameEvents: state.characterFeed.gameEvents }),
+  {
+    fetchCharacterFeed: FeedActions.fetchFeed,
+    putGameEvent: FeedActions.putGameEvent,
+  }
+)(CharacterDashboardPage);

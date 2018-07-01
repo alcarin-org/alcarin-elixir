@@ -1,9 +1,7 @@
-// import { Types as TestTypes } from '../redux/TestRedux';
-// import { testActionHandler } from './TestActionHandler';
+import { Types as FeedTypes } from '../redux/CharacterFeedRedux';
+import { fetchCharacterFeedHandler } from './CharacterFeedActionHandlers';
 
-const AsyncActions = [
-  // [TestTypes.Connect, testActionHandler]
-];
+const AsyncActions = [[FeedTypes.FETCH_FEED, fetchCharacterFeedHandler]];
 
 export default function asyncCallerMiddleware() {
   return next => action => {

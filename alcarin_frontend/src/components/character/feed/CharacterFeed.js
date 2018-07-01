@@ -8,7 +8,10 @@ import GameEventsList from './GameEventsList';
 import FeedMessageInput from './FeedMessageInput';
 
 type GameEventType = {|
-  content: string,
+  type: string,
+  args: {
+    content: string,
+  },
 |};
 
 type CharacterPropertyStateType = {|
@@ -19,14 +22,15 @@ type OnInputChangeType = (SyntheticInputEvent<HTMLInputElement>) => any;
 
 type ComponentPropsType = {|
   label?: string,
+  gameEvents: GameEventType[],
   onSubmit?: (state: CharacterPropertyStateType) => any,
 |};
 
-const Messages: GameEventType[] = [
-  { content: 'First message' },
-  { content: 'Second message' },
-  { content: 'Third message' },
-];
+// const Messages: GameEventType[] = [
+//   { content: 'First message' },
+//   { content: 'Second message' },
+//   { content: 'Third message' },
+// ];
 
 export default class CharacterFeed extends React.PureComponent<
   ComponentPropsType,
@@ -34,7 +38,6 @@ export default class CharacterFeed extends React.PureComponent<
 > {
   state = {
     chatInput: '',
-    gameEvents: [...Messages],
   };
 
   onInputChange: OnInputChangeType = ev =>
@@ -45,16 +48,13 @@ export default class CharacterFeed extends React.PureComponent<
     this.props.onSubmit && this.props.onSubmit(this.state);
     this.setState({
       chatInput: '',
-      gameEvents: this.state.gameEvents.concat({
-        content: this.state.chatInput,
-      }),
     });
   };
 
   render() {
     return (
       <div className="character-feed">
-        <GameEventsList feedMessages={this.state.gameEvents} />
+        <GameEventsList feedMessages={this.props.gameEvents} />
         <form onSubmit={this.onSubmit}>
           <label>{this.props.label}</label>
           <FeedMessageInput

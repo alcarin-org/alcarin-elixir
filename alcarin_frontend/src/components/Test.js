@@ -8,7 +8,9 @@ export default function Test({ inProgress, characterFeedConnected, join }) {
     <div className="Test">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        <h1 className="App-title">Welcome to React ({inProgress ? 'in progress' : 'not in progress'})</h1>
+        <h1 className="App-title">
+          Welcome to React ({inProgress ? 'in progress' : 'not in progress'})
+        </h1>
         {characterFeedConnected ? (
           <span>Connected!</span>
         ) : (
