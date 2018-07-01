@@ -52,6 +52,7 @@ defmodule AlcarinWeb do
     quote do
       use Phoenix.Channel
       import AlcarinWeb.Gettext
+      import AlcarinWeb.ErrorHelpers
     end
   end
 

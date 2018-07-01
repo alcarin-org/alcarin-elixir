@@ -13,6 +13,6 @@ defmodule AlcarinWeb.ApiController do
     conn
       |> put_status(:not_found)
       # |> put_flash(:info, "Welcome to Phoenix, from flash info!")
-      |> json %{test: wot}
+      |> json(%{test: wot})
   end
 end

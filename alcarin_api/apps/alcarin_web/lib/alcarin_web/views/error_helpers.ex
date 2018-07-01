@@ -4,6 +4,16 @@ defmodule AlcarinWeb.ErrorHelpers do
   """
 
   @doc """
+    Traverse
+  """
+  def parse_changeset_errors(changeset) do
+    Ecto.Changeset.traverse_errors(
+      changeset,
+      &(elem(&1, 0))
+    )
+  end
+
+  @doc """
   Translates an error message using gettext.
   """
   def translate_error({msg, opts}) do
