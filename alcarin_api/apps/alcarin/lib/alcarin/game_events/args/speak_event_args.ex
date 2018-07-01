@@ -3,7 +3,7 @@ defmodule Alcarin.GameEvents.Args.SpeakEventArgs do
   import Ecto.Changeset
 
   embedded_schema do
-    field :content, :string
+    field(:content, :string)
   end
 
   @doc false

@@ -3,7 +3,7 @@ defmodule AlcarinWeb.CharacterFeedController do
 
   alias Alcarin.GameEvents
 
-  action_fallback AlcarinWeb.FallbackController
+  action_fallback(AlcarinWeb.FallbackController)
 
   def feed(conn, _params) do
     game_events = GameEvents.list_game_events()

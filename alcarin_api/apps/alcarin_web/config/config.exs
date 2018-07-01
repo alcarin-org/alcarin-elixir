@@ -16,8 +16,7 @@ config :alcarin_web, AlcarinWeb.Endpoint,
   url: [host: "localhost"],
   secret_key_base: "p8XNUn3lCMHRTXOJ1/zcJR1W7wV7HnGiufrezgBQGPGL4KDAhjX/QaiauFZ2M40t",
   render_errors: [view: AlcarinWeb.ErrorView, accepts: ~w(json)],
-  pubsub: [name: AlcarinWeb.PubSub,
-           adapter: Phoenix.PubSub.PG2]
+  pubsub: [name: AlcarinWeb.PubSub, adapter: Phoenix.PubSub.PG2]
 
 # Configures Elixir's Logger
 config :logger, :console,
@@ -30,4 +29,4 @@ config :alcarin_web, :generators,
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
-import_config "#{Mix.env}.exs"
+import_config "#{Mix.env()}.exs"

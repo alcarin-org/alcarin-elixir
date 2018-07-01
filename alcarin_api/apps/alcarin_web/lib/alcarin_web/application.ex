@@ -7,7 +7,7 @@ defmodule AlcarinWeb.Application do
     # Define workers and child supervisors to be supervised
     children = [
       # Start the endpoint when the application starts
-      supervisor(AlcarinWeb.Endpoint, []),
+      supervisor(AlcarinWeb.Endpoint, [])
       # Start your own worker by calling: AlcarinWeb.Worker.start_link(arg1, arg2, arg3)
       # worker(AlcarinWeb.Worker, [arg1, arg2, arg3]),
     ]

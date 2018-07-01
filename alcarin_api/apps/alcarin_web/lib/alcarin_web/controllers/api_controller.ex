@@ -9,10 +9,8 @@ defmodule AlcarinWeb.ApiController do
   end
 
   def index(conn, %{"wot" => wot}) do
-    IO.puts inspect test()
     conn
-      |> put_status(:not_found)
-      # |> put_flash(:info, "Welcome to Phoenix, from flash info!")
-      |> json(%{test: wot})
+    |> put_status(:not_found)
+    |> json(%{test: wot})
   end
 end

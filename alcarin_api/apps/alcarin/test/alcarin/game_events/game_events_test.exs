@@ -49,7 +49,10 @@ defmodule Alcarin.GameEventsTest do
 
     test "update_game_event/2 with invalid data returns error changeset" do
       game_event = game_event_fixture()
-      assert {:error, %Ecto.Changeset{}} = GameEvents.update_game_event(game_event, @invalid_attrs)
+
+      assert {:error, %Ecto.Changeset{}} =
+               GameEvents.update_game_event(game_event, @invalid_attrs)
+
       assert game_event == GameEvents.get_game_event!(game_event.id)
     end
 

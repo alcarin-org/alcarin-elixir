@@ -9,7 +9,7 @@ defmodule AlcarinWeb.ErrorHelpers do
   def parse_changeset_errors(changeset) do
     Ecto.Changeset.traverse_errors(
       changeset,
-      &(elem(&1, 0))
+      &elem(&1, 0)
     )
   end
 

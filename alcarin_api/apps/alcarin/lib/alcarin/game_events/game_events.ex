@@ -38,5 +38,4 @@ defmodule Alcarin.GameEvents do
     |> GameEvent.changeset(%{type: :speak, args: %{content: content}})
     |> Repo.insert()
   end
-
 end

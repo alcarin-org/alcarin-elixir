@@ -5,6 +5,7 @@ defmodule Alcarin.GameEvents.AtomCustomType do
   def cast(game_event_type) when is_atom(game_event_type) do
     {:ok, game_event_type}
   end
+
   def cast(_), do: :error
 
   def load(value), do: {:ok, String.to_atom(value)}

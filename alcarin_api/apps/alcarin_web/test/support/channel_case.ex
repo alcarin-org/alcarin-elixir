@@ -25,13 +25,13 @@ defmodule AlcarinWeb.ChannelCase do
     end
   end
 
-
   setup tags do
     :ok = Ecto.Adapters.SQL.Sandbox.checkout(Alcarin.Repo)
+
     unless tags[:async] do
       Ecto.Adapters.SQL.Sandbox.mode(Alcarin.Repo, {:shared, self()})
     end
+
     :ok
   end
-
 end

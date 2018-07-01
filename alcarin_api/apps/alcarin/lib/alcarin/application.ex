@@ -12,8 +12,12 @@ defmodule Alcarin.Application do
   def start(_type, _args) do
     import Supervisor.Spec, warn: false
 
-    Supervisor.start_link([
-      supervisor(Alcarin.Repo, []),
-    ], strategy: :one_for_one, name: Alcarin.Supervisor)
+    Supervisor.start_link(
+      [
+        supervisor(Alcarin.Repo, [])
+      ],
+      strategy: :one_for_one,
+      name: Alcarin.Supervisor
+    )
   end
 end
