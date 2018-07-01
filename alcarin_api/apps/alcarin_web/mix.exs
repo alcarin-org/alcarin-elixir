@@ -24,7 +24,7 @@ defmodule AlcarinWeb.Mixfile do
   def application do
     [
       mod: {AlcarinWeb.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :corsica]
     ]
   end
 
@@ -42,7 +42,8 @@ defmodule AlcarinWeb.Mixfile do
       {:phoenix_ecto, "~> 3.2"},
       {:gettext, "~> 0.11"},
       {:alcarin, in_umbrella: true},
-      {:cowboy, "~> 1.0"}
+      {:cowboy, "~> 1.0"},
+      {:corsica, "~> 1.0"}
     ]
   end
 

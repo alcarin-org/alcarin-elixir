@@ -36,6 +36,7 @@ defmodule AlcarinWeb.Endpoint do
     signing_salt: "YRoIVwO5"
   )
 
+  plug(Corsica, origins: "http://localhost:8080", allow_headers: ["accept", "content-type"])
   plug(AlcarinWeb.Router)
 
   @doc """
