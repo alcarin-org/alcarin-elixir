@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider as StoreProvier } from 'react-redux';
 import { BrowserRouter, Route } from 'react-router-dom';
+import 'normalize.css';
 
 import './index.css';
 import App from './containers/App';

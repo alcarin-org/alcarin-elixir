@@ -16,7 +16,6 @@ type GameEventType = {|
 
 type CharacterPropertyStateType = {|
   chatInput: string,
-  gameEvents: GameEventType[],
 |};
 type OnInputChangeType = (SyntheticInputEvent<HTMLInputElement>) => any;
 

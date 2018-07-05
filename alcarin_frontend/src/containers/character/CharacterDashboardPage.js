@@ -5,9 +5,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { Socket, Channel } from 'phoenix';
-import { always } from 'ramda';
 
-import CharacterFeed from '../../components/character/feed/CharacterFeed';
+import CharacterFeed from '../../components/character-feed/CharacterFeed';
 import { Creators as FeedActions } from '../../store/redux/CharacterFeedRedux';
 import {
   PushNamespace,

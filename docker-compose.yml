@@ -4,10 +4,19 @@ volumes:
   alcarin_api_data:
 
 services:
+  web-storybook:
+    image: node:9.11-slim
+    working_dir: /code
+    command: yarn run storybook
+    volumes:
+      - ./alcarin_frontend:/code
+    ports:
+      - "9009:9009"
+
   web:
     image: node:9.11-slim
     working_dir: /code
-    command: npm start
+    command: yarn start
     volumes:
       - ./alcarin_frontend:/code
     ports:

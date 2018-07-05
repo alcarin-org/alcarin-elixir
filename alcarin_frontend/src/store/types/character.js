@@ -3,6 +3,8 @@ import { always } from 'ramda';
 
 export const FeedMessageType = always(
   PropTypes.shape({
-    content: PropTypes.string.isRequired,
+    args: PropTypes.shape({
+      content: PropTypes.string.isRequired,
+    }),
   })
 );

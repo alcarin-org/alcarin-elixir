@@ -1,6 +1,7 @@
 import { configure, addDecorator } from '@storybook/react';
 import { withKnobs } from '@storybook/addon-knobs/react';
 import '@storybook/addon-console';
+import 'normalize.css';
 
 const req = require.context('../src/components', true, /\.stories\.js$/)
 
@@ -10,4 +11,3 @@ function loadStories() {
 
 addDecorator(withKnobs);
 configure(loadStories, module);
-
