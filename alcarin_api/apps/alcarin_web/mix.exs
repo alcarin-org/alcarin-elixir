@@ -13,6 +13,13 @@ defmodule AlcarinWeb.Mixfile do
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
       start_permanent: Mix.env() == :prod,
+      preferred_cli_env: [
+        coveralls: :test,
+        "coveralls.detail": :test,
+        "coveralls.post": :test,
+        "coveralls.html": :test
+      ],
+      test_coverage: [tool: ExCoveralls],
       aliases: aliases(),
       deps: deps()
     ]
@@ -44,7 +51,8 @@ defmodule AlcarinWeb.Mixfile do
       {:alcarin, in_umbrella: true},
       {:cowboy, "~> 1.0"},
       {:corsica, "~> 1.0"},
-      {:stream_data, "~> 0.1"}
+      {:stream_data, "~> 0.1"},
+      {:excoveralls, "~> 0.8", only: :test}
     ]
   end
 
