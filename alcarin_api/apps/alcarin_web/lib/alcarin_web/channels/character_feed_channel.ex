@@ -2,7 +2,6 @@ defmodule AlcarinWeb.CharacterFeedChannel do
   use AlcarinWeb, :channel
 
   alias Alcarin.GameEvents
-  alias Alcarin.GameEvents.GameEvent
 
   def join("character-feed:lobby", _message, socket) do
     {:ok, %{test: 5}, socket}
@@ -14,7 +13,7 @@ defmodule AlcarinWeb.CharacterFeedChannel do
 
   def handle_in("communication:say", %{"content" => new_msg}, socket) do
     case GameEvents.create_speak_event(new_msg) do
-      {:ok, game_event} ->
+      {:ok, _game_event} ->
         {:reply, :ok, socket}
 
       {:error, %Ecto.Changeset{} = changeset} ->
@@ -22,8 +21,7 @@ defmodule AlcarinWeb.CharacterFeedChannel do
     end
   end
 
-  def handle_in(msg, _, socket) do
-    IO.puts(['Unknown message', msg])
-    {:noreply, socket}
+  def handle_in(_, _, socket) do
+    {:reply, {:error, %{error: "Unknown message type"}}, socket}
   end
 end
