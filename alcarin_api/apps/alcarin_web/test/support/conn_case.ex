@@ -19,6 +19,8 @@ defmodule AlcarinWeb.ConnCase do
     quote do
       # Import conveniences for testing with connections
       use Phoenix.ConnTest
+      use ExUnitProperties
+
       import AlcarinWeb.Router.Helpers
 
       # The default endpoint for testing

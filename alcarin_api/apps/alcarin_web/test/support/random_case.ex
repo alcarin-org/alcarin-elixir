@@ -31,7 +31,7 @@ defmodule AlcarinWeb.RandomCase do
 
   @doc false
   defp get_range(length) when length > 1, do: (1..length)
-  defp get_range(length), do: [1]
+  defp get_range(_), do: [1]
 
   @doc false
   defp create_random_string(length, lists) do

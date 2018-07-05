@@ -1,6 +1,4 @@
 defmodule AlcarinWeb.CharacterFeedChannelTest do
-  use ExUnitProperties
-
   use AlcarinWeb.ChannelCase
   import AlcarinWeb.RandomCase
 

@@ -19,6 +19,7 @@ defmodule AlcarinWeb.ChannelCase do
     quote do
       # Import conveniences for testing with channels
       use Phoenix.ChannelTest
+      use ExUnitProperties
 
       # The default endpoint for testing
       @endpoint AlcarinWeb.Endpoint

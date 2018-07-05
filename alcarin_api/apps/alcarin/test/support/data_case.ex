@@ -22,6 +22,8 @@ defmodule Alcarin.DataCase do
       import Ecto.Changeset
       import Ecto.Query
       import Alcarin.DataCase
+
+      use ExUnitProperties
     end
   end
 

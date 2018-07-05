@@ -35,7 +35,7 @@ defmodule Alcarin.GameEvents do
   """
   def create_speak_event(content) do
     %GameEvent{}
-    |> GameEvent.changeset(%{type: :speak, args: %{content: content}})
+    |> GameEvent.changeset(%{type: :speak, args: %{"content" => content}})
     |> Repo.insert()
   end
 end
