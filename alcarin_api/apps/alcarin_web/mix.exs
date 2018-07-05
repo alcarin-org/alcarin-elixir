@@ -10,9 +10,9 @@ defmodule AlcarinWeb.Mixfile do
       deps_path: "../../deps",
       lockfile: "../../mix.lock",
       elixir: "~> 1.4",
-      elixirc_paths: elixirc_paths(Mix.env),
-      compilers: [:phoenix, :gettext] ++ Mix.compilers,
-      start_permanent: Mix.env == :prod,
+      elixirc_paths: elixirc_paths(Mix.env()),
+      compilers: [:phoenix, :gettext] ++ Mix.compilers(),
+      start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps()
     ]
@@ -30,7 +30,7 @@ defmodule AlcarinWeb.Mixfile do
 
   # Specifies which paths to compile per environment.
   defp elixirc_paths(:test), do: ["lib", "test/support"]
-  defp elixirc_paths(_),     do: ["lib"]
+  defp elixirc_paths(_), do: ["lib"]
 
   # Specifies your project dependencies.
   #
@@ -43,7 +43,8 @@ defmodule AlcarinWeb.Mixfile do
       {:gettext, "~> 0.11"},
       {:alcarin, in_umbrella: true},
       {:cowboy, "~> 1.0"},
-      {:corsica, "~> 1.0"}
+      {:corsica, "~> 1.0"},
+      {:stream_data, "~> 0.1"}
     ]
   end
 
@@ -52,6 +53,6 @@ defmodule AlcarinWeb.Mixfile do
   #
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
-    ["test": ["ecto.create --quiet", "ecto.migrate", "test"]]
+    [test: ["ecto.create --quiet", "ecto.migrate", "test"]]
   end
 end
