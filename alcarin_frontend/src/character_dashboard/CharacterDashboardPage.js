@@ -3,28 +3,28 @@
 // { type ComponentType }
 
 import React from 'react';
-import { connect } from 'react-redux';
 import { Socket, Channel } from 'phoenix';
 
-import CharacterFeed from '../../components/character-feed/CharacterFeed';
-import { Creators as FeedActions } from '../../store/redux/CharacterFeedRedux';
+import CharacterFeed from './character-feed/CharacterFeed';
 import {
   PushNamespace,
   PushAction,
   type PushNamespaceType,
   type PushActionType,
-} from '../../defs/ChannelPushTypes';
+} from './ChannelPushTypes';
 
 type ComponentPropsType = {|
   onSubmit?: (state: string) => void,
   socket: Socket,
+  fetchCharacterFeed: Function,
+  putGameEvent: Function,
 |};
 
 type ComponentStateType = {|
   connected: boolean,
 |};
 
-export class CharacterDashboardPage extends React.PureComponent<
+export default class CharacterDashboardPage extends React.PureComponent<
   ComponentPropsType,
   ComponentStateType
 > {
@@ -83,11 +83,3 @@ export class CharacterDashboardPage extends React.PureComponent<
     );
   }
 }
-
-export default connect(
-  state => ({ gameEvents: state.characterFeed.gameEvents }),
-  {
-    fetchCharacterFeed: FeedActions.fetchFeed,
-    putGameEvent: FeedActions.putGameEvent,
-  }
-)(CharacterDashboardPage);

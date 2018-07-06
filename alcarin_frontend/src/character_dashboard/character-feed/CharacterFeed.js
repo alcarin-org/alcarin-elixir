@@ -1,11 +1,8 @@
 // @flow
 
-import './styles/CharacterFeed.css';
+import './CharacterFeed.css';
 
 import React from 'react';
-
-import GameEventsList from './GameEventsList';
-import FeedMessageInput from './FeedMessageInput';
 
 type GameEventType = {|
   type: string,
@@ -53,13 +50,22 @@ export default class CharacterFeed extends React.PureComponent<
   render() {
     return (
       <div className="character-feed">
-        <GameEventsList feedMessages={this.props.gameEvents} />
+        <ul className="character-feed-presenter">
+          {this.props.gameEvents
+            .filter(msg => msg.type === 'speak')
+            .map((msg, ind) => (
+              <li key={ind}>{msg.args && msg.args.content}</li>
+            ))}
+        </ul>
         <form onSubmit={this.onSubmit}>
           <label>{this.props.label}</label>
-          <FeedMessageInput
-            value={this.state.chatInput}
-            onChange={this.onInputChange}
-          />
+          <div className="feed-message-input">
+            <input
+              type="text"
+              value={this.state.chatInput}
+              onChange={this.onInputChange}
+            />
+          </div>
         </form>
       </div>
     );

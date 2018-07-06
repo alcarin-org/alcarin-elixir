@@ -1,7 +1,9 @@
-import { Types as FeedTypes } from '../redux/CharacterFeedRedux';
+import CharacterDashboard from '../../character_dashboard';
 import { fetchCharacterFeedHandler } from './CharacterFeedActionHandlers';
 
-const AsyncActions = [[FeedTypes.FETCH_FEED, fetchCharacterFeedHandler]];
+const AsyncActions = [
+  [CharacterDashboard.Types.FETCH_FEED, fetchCharacterFeedHandler],
+];
 
 export default function asyncCallerMiddleware() {
   return next => action => {

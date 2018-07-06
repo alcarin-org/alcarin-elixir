@@ -17,7 +17,7 @@ export const { Types, Creators } = createActions({
 const gameEventsLens = lensProp('gameEvents');
 
 export default createReducer(
-  { counter: 0, gameEvents: [] },
+  { gameEvents: [] },
   {
     [Types.FETCH_FEED_SUCCESS]: (store, { payload }) =>
       assoc('gameEvents', payload.game_events, store),

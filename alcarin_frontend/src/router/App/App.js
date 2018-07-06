@@ -4,8 +4,10 @@ import './App.css';
 import React from 'react';
 import { Route, Link } from 'react-router-dom';
 
-import { SocketContext } from '../services/Socket';
-import CharacterDashboardPage from './character/CharacterDashboardPage';
+import CharacterDashboard from '../../character_dashboard';
+import Connection from '../../connection';
+
+const { SocketContext } = Connection.Socket;
 
 export default class App extends React.PureComponent<{}> {
   render() {
@@ -18,7 +20,9 @@ export default class App extends React.PureComponent<{}> {
             <Link to="/character-feed">Go to demo feed page</Link>
             <Route
               path="/character-feed"
-              render={() => <CharacterDashboardPage socket={socket} />}
+              render={() => (
+                <CharacterDashboard.CharacterDashboardPage socket={socket} />
+              )}
             />
           </div>
         )}
