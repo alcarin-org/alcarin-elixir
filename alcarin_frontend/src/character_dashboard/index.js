@@ -10,7 +10,7 @@ import reducer, { Creators, Types } from './CharacterFeedRedux';
 const ConnectedCharacterDashboardPage = connect(
   state => ({ gameEvents: state.characterFeed.gameEvents }),
   {
-    fetchCharacterFeed: Creators.fetchFeed,
+    fetchCharacterFeed: Creators.fetchFeedRequest,
     putGameEvent: Creators.putGameEvent,
   }
 )(CharacterDashboardPage);
