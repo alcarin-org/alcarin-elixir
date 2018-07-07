@@ -1,7 +1,9 @@
 /**
- * character_dashboard module provide core features for user character dashboard
- * page
+ * character_dashboard module provide core features for
+ * user character dashboard page
  */
+
+// @flow
 
 import CharacterDashboardPage from './CharacterDashboardPage';
 import { connect } from 'react-redux';

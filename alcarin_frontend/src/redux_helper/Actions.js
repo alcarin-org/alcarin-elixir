@@ -14,12 +14,12 @@ import {
 } from 'ramda';
 
 // eslint-disable-next-line flowtype/require-exact-type
-export type ActionType = { type: string, payload: Object };
+export type ActionType = { type: string, payload: Object, __meta?: Object };
 type ActionCreatorType = (payload: ?Object) => ActionType;
 
 export type ActionDefinitionType =
   | Object
-  | ((type: string, payload: Object) => ActionType);
+  | ((type: string, payload: Object) => ActionCreatorType);
 
 // eslint-disable-next-line flowtype/require-exact-type
 export type ActionsDefType = {

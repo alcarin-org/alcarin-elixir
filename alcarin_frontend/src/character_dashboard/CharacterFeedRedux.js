@@ -2,33 +2,33 @@
 
 import { lensProp, over, append, assoc } from 'ramda';
 
+import { Api } from '../connection';
 import {
   createActions,
   createReducer,
   createAPICallActions,
 } from '../redux_helper';
-import { Api } from '../connection';
 
-/* ------------- Types and Action Creators ------------- */
+const gameEventsLens = lensProp('gameEvents');
+
+type StateType = {|
+  gameEvents: Array<Object>,
+|};
+
 export const { Types, Creators } = createActions('charFeed', {
   ...createAPICallActions('fetchFeed', Api.fetchCharacterFeed),
   putGameEvent: { gameEvent: null },
 });
 
-/* ------------- Hookup Reducers To Types ------------- */
-const gameEventsLens = lensProp('gameEvents');
+const InitialState: StateType = { gameEvents: [] };
 
-export const reducer = createReducer(
-  { gameEvents: [] },
-  {
-    [Types.FETCH_FEED_REQUEST]: (store, action) => {
-      console.info('request....', action);
-      return store;
-      // assoc('gameEvents', payload.game_events, store),
-    },
-    [Types.FETCH_FEED_RESPONSE]: (store, { payload }) =>
-      assoc('gameEvents', payload.game_events, store),
-    [Types.PUT_GAME_EVENT]: (store, { payload: { gameEvent } }) =>
-      over(gameEventsLens, append(gameEvent), store),
-  }
-);
+const fetchFeedResponse = (store: StateType, { payload }) =>
+  assoc('gameEvents', payload.game_events, store);
+
+const putGameEvent = (store: StateType, { payload: { gameEvent } }) =>
+  over(gameEventsLens, append(gameEvent), store);
+
+export const reducer = createReducer(InitialState, {
+  [Types.FETCH_FEED_RESPONSE]: fetchFeedResponse,
+  [Types.PUT_GAME_EVENT]: putGameEvent,
+});

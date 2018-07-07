@@ -1,6 +1,8 @@
+// @flow
+
 /**
- * "services" module provide common connection utilities that are unnecessery
- * to system working
+ * "connection" module provide common connection utilities that are unnecessery
+ * for system to work
  */
 
 import Api, { type ApiFunctionType as _ApiFunctionType } from './Api';

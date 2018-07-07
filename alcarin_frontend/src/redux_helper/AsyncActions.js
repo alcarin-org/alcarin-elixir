@@ -3,27 +3,21 @@
 import { dissoc } from 'ramda';
 
 import type {
-  ActionsDefType,
   ActionDefinitionType,
   ActionType,
-} from './ActionHelpers';
+  ActionsDefType,
+} from './Actions';
 import type { ApiFunctionType } from '../connection';
 
-type AsyncActionType = ActionType & {
-  __async_meta: {
-    apiFunction: ApiFunctionType,
-    createResponse: Object => ActionType,
-  },
-};
 type DispatchType = ActionType => ActionType;
 
 export function asyncCallerMiddleware() {
-  return (dispatch: DispatchType) => (action: AsyncActionType) => {
-    if (!action.__async_meta) {
+  return (dispatch: DispatchType) => (action: ActionType) => {
+    if (!action.__meta) {
       return dispatch(action);
     }
 
-    const { apiFunction, createResponse } = action.__async_meta;
+    const { apiFunction, createResponse } = action.__meta;
 
     if (apiFunction) {
       apiFunction(action.payload).then(response =>
@@ -31,7 +25,7 @@ export function asyncCallerMiddleware() {
       );
     }
 
-    const serializableAction = dissoc('__async_meta', action);
+    const serializableAction = dissoc('__meta', action);
     return dispatch(serializableAction);
   };
 }
@@ -50,7 +44,7 @@ export function createAPICallActions(
     [`${name}Request`]: (type, payload) => ({
       type,
       payload: Object.assign(payloadDef || {}, payload || {}),
-      __async_meta: {
+      __meta: {
         apiFunction,
         createResponse: payload =>
           responseActionCreator(type.replace('_REQUEST', '_RESPONSE'), payload),

@@ -18,6 +18,10 @@ test('createAPICallActions() should prepare definition for two actions, req and 
 
   expect(typeof apiCallsActions.fetchUsersRequest).toBe('function');
   expect(typeof apiCallsActions.fetchUsersResponse).toBe('function');
+
+  // $FlowFixMe
+  const resultAction = apiCallsActions.fetchUsersRequest('TEST', {});
+  expect(typeof resultAction.__meta.createResponse).toBe('function');
 });
 
 test('createAPICallActions() should provide data in form understandable for createActions()', () => {
@@ -42,16 +46,15 @@ test('createAPICallActions() should provide data in form understandable for crea
   expect(requestAction).toMatchObject({
     type: 'FETCH_USERS_REQUEST',
     payload: { authorized: true },
-    __async_meta: {
+    __meta: {
       apiFunction: fetchUsersFromServerMock,
     },
   });
-  expect(typeof requestAction.__async_meta.createResponse).toBe('function');
 
   expect(Creators.fetchUsersRequest({ authorized: false })).toMatchObject({
     type: 'FETCH_USERS_REQUEST',
     payload: { authorized: false },
-    __async_meta: {
+    __meta: {
       apiFunction: fetchUsersFromServerMock,
     },
   });
@@ -88,6 +91,6 @@ test('createAPICallActions() should prepare proper action for empty payload', ()
   expect(Creators.fetchUsersRequest()).toMatchObject({
     type: 'FETCH_USERS_REQUEST',
     payload: {},
-    __async_meta: { apiFunction: fetchUsersFromServerMock },
+    __meta: { apiFunction: fetchUsersFromServerMock },
   });
 });

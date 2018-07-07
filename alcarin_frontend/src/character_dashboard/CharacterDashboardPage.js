@@ -1,7 +1,5 @@
 // @flow
 
-// { type ComponentType }
-
 import React from 'react';
 import { Socket, Channel } from 'phoenix';
 
@@ -18,6 +16,7 @@ type ComponentPropsType = {|
   socket: Socket,
   fetchCharacterFeed: Function,
   putGameEvent: Function,
+  gameEvents: any,
 |};
 
 type ComponentStateType = {|
@@ -52,19 +51,23 @@ export default class CharacterDashboardPage extends React.PureComponent<
     console.info('Leave character feed channel');
   }
 
-  sendMessage = (ns: PushNamespaceType, action: PushActionType, params) => {
+  sendMessage = (
+    ns: PushNamespaceType,
+    action: PushActionType,
+    params: Object
+  ) => {
     return this.channel.push(`${ns}:${action}`, params);
   };
 
-  onSay = msg => {
+  onSay = (msg: string) => {
     this.props.putGameEvent({
       gameEvent: {
         type: 'speak',
-        args: { content: msg.chatInput },
+        args: { content: msg },
       },
     });
     return this.sendMessage(PushNamespace.Communication, PushAction.Say, {
-      content: msg.chatInput,
+      content: msg,
     })
       .receive('ok', console.log)
       .receive('error', console.error);

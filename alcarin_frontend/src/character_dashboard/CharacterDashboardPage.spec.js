@@ -1,5 +1,7 @@
+// @flow
+
 import React from 'react';
-import { CharacterDashboardPage } from './CharacterDashboardPage';
+import CharacterDashboardPage from './CharacterDashboardPage';
 import { shallow } from 'enzyme';
 
 function joinMock(triggerEvent) {
@@ -11,6 +13,14 @@ function joinMock(triggerEvent) {
   };
   return jest.fn().mockReturnValue(joinResult);
 }
+
+const pageProps = (props: Object = {}) => ({
+  fetchCharacterFeed: jest.fn(),
+  putGameEvent: jest.fn(),
+  gameEvents: [],
+  socket: null,
+  ...props,
+});
 
 describe('Character dashboard page', () => {
   test('should try to connect to user channel on mount', () => {
@@ -26,7 +36,8 @@ describe('Character dashboard page', () => {
         join: joinMock,
       }),
     };
-    shallow(<CharacterDashboardPage socket={socket} />);
+    const props = pageProps({ socket });
+    shallow(<CharacterDashboardPage {...props} />);
     expect(joinMock).toHaveBeenCalled();
     expect(joinResult.receive).toHaveBeenCalledWith('ok', expect.any(Function));
     expect(joinResult.receive).toHaveBeenCalledWith(
@@ -44,7 +55,8 @@ describe('Character dashboard page', () => {
         leave: leaveMock,
       }),
     };
-    const cmp = shallow(<CharacterDashboardPage socket={socket} />);
+    const props = pageProps({ socket });
+    const cmp = shallow(<CharacterDashboardPage {...props} />);
     cmp.unmount();
 
     expect(leaveMock).toHaveBeenCalled();
@@ -56,7 +68,8 @@ describe('Character dashboard page', () => {
         join: joinMock(),
       }),
     };
-    const cmp = shallow(<CharacterDashboardPage socket={socket} />);
+    const props = pageProps({ socket });
+    const cmp = shallow(<CharacterDashboardPage {...props} />);
     expect(cmp.find('.spinner').length).toBe(1);
   });
 
@@ -66,7 +79,8 @@ describe('Character dashboard page', () => {
         join: joinMock('ok'),
       }),
     };
-    const cmp = shallow(<CharacterDashboardPage socket={socket} />);
+    const props = pageProps({ socket });
+    const cmp = shallow(<CharacterDashboardPage {...props} />);
     expect(cmp.find('.spinner').length).toBe(0);
     const feed = cmp.find('CharacterFeed');
     expect(feed.length).toBe(1);
