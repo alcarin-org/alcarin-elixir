@@ -4,17 +4,16 @@ import { Provider as StoreProvier } from 'react-redux';
 import { BrowserRouter, Route } from 'react-router-dom';
 import 'normalize.css';
 
-import Router from './router';
+import { App } from './router';
 import registerServiceWorker from './registerServiceWorker';
 import createReduxStore from './store';
-import Connection from './connection';
+import { Socket } from './connection';
 
-const Socket = Connection.Socket;
 const $root = document.getElementById('root');
 const store = createReduxStore();
 const socket = Socket.createSocketConnection();
 
-renderApp(Router.App);
+renderApp(App);
 
 if (module.hot) {
   module.hot.accept('./router', () => {

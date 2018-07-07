@@ -5,7 +5,7 @@
 
 import CharacterDashboardPage from './CharacterDashboardPage';
 import { connect } from 'react-redux';
-import reducer, { Creators, Types } from './CharacterFeedRedux';
+import { Creators, Types, reducer } from './CharacterFeedRedux';
 
 const ConnectedCharacterDashboardPage = connect(
   state => ({ gameEvents: state.characterFeed.gameEvents }),
@@ -15,9 +15,8 @@ const ConnectedCharacterDashboardPage = connect(
   }
 )(CharacterDashboardPage);
 
-export default {
-  CharacterDashboardPage: ConnectedCharacterDashboardPage,
-
+export {
+  ConnectedCharacterDashboardPage as CharacterDashboardPage,
   Creators,
   Types,
   reducer,

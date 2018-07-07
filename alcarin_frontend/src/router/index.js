@@ -6,4 +6,4 @@
 
 import App from './App/App';
 
-export default { App };
+export { App };
